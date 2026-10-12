@@ -1,7 +1,7 @@
 #include "projet_svg.h"
 
 int main(void){
-    unsigned char a;
+    unsigned char choice;
     printf("------------Projet C SVG------------\n");
 
     //interface utilisateur console
@@ -9,18 +9,20 @@ int main(void){
         printf("\nListe des option :\n");
         printf("=> 0 - Quittez\n");
         printf("=> 1 - Creer un nouveau projet\n");
-        printf("=> 2 - Editer le projet courant\n");
+        printf("=> 2 - Editer le projet\n");
         printf("=> 3 - Sauvegarder le projet\n");
         printf("=> 4 - Charger un projet\n");
+        printf("=> 5 - Visualiser le projet\n");
 
-        scanf("%c",&a);
-
-        switch (a){
+        scanf(" %c",&choice);
+        
+        //gestion des choix
+        switch (choice){
         case '0':
             return 0;
             break;
         case '1':
-            return 0;
+            add_new_form();
             break;
         case '2':
             return 0;
@@ -31,9 +33,11 @@ int main(void){
         case '4':
             return 0;
             break;
-        
+        case '5':
+            return 0;
+            break;
         default:
-            printf("Commande invalide\n\n");
+            printf("\nCommande invalide\n");
             break;
         }
     }
