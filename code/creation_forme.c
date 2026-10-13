@@ -14,7 +14,7 @@ char* add_color(void) {
         // Vide le reste du tampon clavier
         int c;
         while ((c = getchar()) != '\n' && c != EOF);
-        // Vérification de la longueur (doit être exactement 6)
+        // Vérification de la longueur
         if (strlen(buffer) != 6) {
             printf("Erreur : La couleur doit contenir exactement 6 caractères (ex: FFFFFF).\n");
             continue;
@@ -76,7 +76,7 @@ int add_new_form(void){
     bool boucle = true;
 
     //ouvre le fichier htlm, le créer si il n'existe pas
-    FILE *file = fopen("index.html", "w");
+    FILE *file = fopen("../index/index.html", "w");
     fprintf(file, "<svg viewBox=\"0 0 500 500\" xmlns=\"http://www.w3.org/2000/svg\">\n");
     if(file==NULL){
         printf("Une erreur est survenu lors du chargement du fichier");
