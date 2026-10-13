@@ -15,13 +15,14 @@ int main(void){
         printf("=> 5 - Visualiser le projet\n");
 
         scanf(" %c",&choice);
-        
+
         //gestion des choix
         switch (choice){
         case '0':
             return 0;
             break;
         case '1':
+            printf("test main");
             add_new_form();
             break;
         case '2':

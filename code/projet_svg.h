@@ -21,6 +21,13 @@
         point *b;
     }line;
 
+    typedef struct circle_t{
+        char *color;
+        char *color_border;
+        point *center;
+        int radius;
+    }circle;
+
     //fonction pre-charger
     int add_new_form(void);
 #endif
