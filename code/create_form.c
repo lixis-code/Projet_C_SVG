@@ -112,7 +112,7 @@ int add_new_form(void){
     unsigned char choice;
     bool boucle = true;
     //ouvre le fichier htlm, le créer si il n'existe pas
-    FILE *file = fopen("index/index.html", "w");///mnt/c/Users/lixis/Desktop/devellopement/coda/projet/projet/index/index.html
+    FILE *file = fopen("index/index.html", "w");//chemin absolu : /mnt/c/Users/lixis/Desktop/devellopement/coda/projet/projet/index/index.html
     if(file==NULL){
         printf("Une erreur est survenu lors du chargement du fichier");
         return 0;
@@ -124,6 +124,10 @@ int add_new_form(void){
         printf("=> 0 - Quittez\n");
         printf("=> 1 - Ligne\n");
         printf("=> 2 - Cercle\n");
+        //vide l entrer clavier avant de demander l option
+        if(getchar()!='\n'){
+            while (getchar() != '\n');
+        }
         scanf(" %c",&choice);
         switch (choice){
         case '0':

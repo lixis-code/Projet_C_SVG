@@ -30,4 +30,5 @@
 
     //fonction pre-charger
     int add_new_form(void);
+    int edit_form(void);
 #endif

@@ -2,6 +2,7 @@
 
 int main(void){
     unsigned char choice;
+
     printf("------------Projet C SVG------------\n");
 
     //interface utilisateur console
@@ -22,11 +23,10 @@ int main(void){
             return 0;
             break;
         case '1':
-            printf("test main");
             add_new_form();
             break;
         case '2':
-            return 0;
+            edit_form();
             break;
         case '3':
             return 0;
@@ -40,6 +40,10 @@ int main(void){
         default:
             printf("\nCommande invalide\n");
             break;
+        }
+        //vide l entrer clavier
+        if(getchar()!='\n'){
+            while (getchar() != '\n');
         }
     }
 }

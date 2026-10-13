@@ -3,7 +3,8 @@ CC = gcc
 CFLAGS = -Wall -Wextra -Werror -std=c99 -fstack-protector
 
 SRC =	code/main.c \
-		code/creation_forme.c \
+		code/create_form.c \
+		code/edit_form.c \
 
 OBJS = $(SRC:.c=.o)
 
