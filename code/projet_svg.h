@@ -53,8 +53,15 @@
     // Déclaration de la scène globale
     extern Scene ma_scene;
 
-    //fonction pre-charger
+    //fonction utilitaire commune
+    char* add_color(void);
     void clear_stdin(void);
+    int add_new_point(point *p);
+    int add_radius(void);
+
+    //fonction principal des different programme
     int add_new_form(void);
     int edit_form(void);
+    void save_scene_to_html(void);
+    void free_scene(void);
 #endif

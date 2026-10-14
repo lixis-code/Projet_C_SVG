@@ -20,6 +20,7 @@ int main(void){
         //gestion des choix
         switch (choice){
         case '0':
+            free_scene();
             return 0;
             break;
         case '1':
@@ -35,7 +36,7 @@ int main(void){
             return 0;
             break;
         case '5':
-            return 0;
+            save_scene_to_html();
             break;
         default:
             printf("\nCommande invalide\n");

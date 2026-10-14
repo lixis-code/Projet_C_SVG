@@ -51,17 +51,17 @@ char* add_color(void) {
 int add_new_point(point *p){
     int verif;
     do{
-        printf("Entrer l'abscisse du point (entier positif inferieur a 500)\n");
+        printf("Entrer l'abscisse du point (entier compris entre -250 et 250)\n");
         verif=scanf("%d",&p->x);
         //vide le buffer d entrer
         clear_stdin();
-    }while(verif !=1 || p->x<0 || p->x>500);
+    }while(verif !=1 || p->x<-250 || p->x>250);
     do{
-        printf("Entrer l'ordonnée du point (entier positif inferieur a 500)\n");
+        printf("Entrer l'ordonnée du point (entier compris entre -250 et 250)\n");
         verif=scanf("%d",&p->y);
         //vide le buffer d entrer
         clear_stdin();
-    }while(verif !=1 || p->y<0 || p->y>500);
+    }while(verif !=1 || p->y<-250 || p->y>250);
     return 0;
 }
 
@@ -77,6 +77,7 @@ int add_radius(void){
     }while(verif !=1 || r<=0);
     return r;
 }
+
 // Fonction pour créer les cercles et les ajouter à la liste chaînée
 int add_new_circle(void){
     circle_s *c = malloc(sizeof(circle_s));
@@ -109,8 +110,10 @@ int add_new_circle(void){
 int add_new_line(void){
     line_s *l = malloc(sizeof(line_s));
     l->a = malloc(sizeof(point));
+    printf("Point A :\n");
     add_new_point(l->a);
     l->b = malloc(sizeof(point));
+    printf("Point B :\n");
     add_new_point(l->b);
     l->color = add_color();
 
@@ -132,92 +135,11 @@ int add_new_line(void){
     ma_scene.count++;
     return 0;
 }
-/*
-//fonction pour créé les cercles
-int add_new_circle(FILE *file){
-    figure *c=malloc(sizeof(circle_s));
-    c->circle=malloc(sizeof(circle_s));
-    //centre
-    c->circle->center=malloc(sizeof(point));
-    add_new_point(c->circle->center);
-    //rayon
-    c->circle->radius=add_radius();
-    //couleur
-    c->circle->color_border=add_color();
-    c->circle->color=add_color();
-    //ajout de la ligne
-    fprintf(file,"<circle cx=\"%d\" cy=\"%d\" r=\"%d\" stroke=\"#%s\" fill=\"#%s\"/>\n", c->circle->center->x, c->circle->center->y, c->circle->radius, c->circle->color_border, c->circle->color);
-    //liberation de la memoire allouer
-    free(c->circle->center);
-    free(c->circle->color);
-    free(c->circle->color_border);
-    free(c->circle);
-    free(c);
-    return 0;
-}
-
-//fonction pour créé les lignes
-int add_new_line(FILE *file){
-    figure *l=malloc(sizeof(line_s));
-    l->line=malloc(sizeof(line_s));
-    //point a
-    l->line->a=malloc(sizeof(point));
-    add_new_point(l->line->a);
-    //point b
-    l->line->b=malloc(sizeof(point));
-    add_new_point(l->line->b);
-    //couleur
-    l->line->color=add_color();
-    //ajoute de la ligne
-    fprintf(file,"<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" stroke=\"#%s\" />\n", l->line->a->x, l->line->a->y, l->line->b->x, l->line->b->y, l->line->color);
-    //liberation de la memoire allouer
-    free(l->line->color);
-    free(l->line->a);
-    free(l->line->b);
-    free(l->line);
-    free(l);
-    return 0;
-}*/
-
-// Fonction pour exporter toute la liste chaînée vers le fichier HTML/SVG
-void save_scene_to_html(const char *filename) {
-    FILE *file = fopen(filename, "w");
-    if(file == NULL){
-        printf("Une erreur est survenue lors de l'ouverture du fichier HTML.\n");
-        return;
-    }
-
-    fprintf(file, "<svg viewBox=\"0 0 500 500\" xmlns=\"http://www.w3.org/2000/svg\">\n");
-
-    node_t *current = ma_scene.head;
-    while (current != NULL) {
-        if (current->type == LINE) {
-            line_s *l = current->fig.line;
-            fprintf(file, "  <line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" stroke=\"#%s\" />\n", 
-                    l->a->x, l->a->y, l->b->x, l->b->y, l->color);
-        } else if (current->type == CIRCLE) {
-            circle_s *c = current->fig.circle;
-            fprintf(file, "  <circle cx=\"%d\" cy=\"%d\" r=\"%d\" stroke=\"#%s\" fill=\"#%s\"/>\n", 
-                    c->center->x, c->center->y, c->radius, c->color_border, c->color);
-        }
-        current = current->next;
-    }
-
-    fprintf(file, "</svg>\n");
-    fclose(file);
-}
 
 //fonction principal
 int add_new_form(void){
     unsigned char choice;
     bool boucle = true;
-    //ouvre le fichier htlm, le créer si il n'existe pas
-    FILE *file = fopen("index/index.html", "w");//chemin absolu : /mnt/c/Users/lixis/Desktop/devellopement/coda/projet/projet/index/index.html
-    if(file==NULL){
-        printf("Une erreur est survenu lors du chargement du fichier");
-        return 0;
-    }
-    fprintf(file, "<svg viewBox=\"0 0 500 500\" xmlns=\"http://www.w3.org/2000/svg\">\n");
     //creation des forme dans le fichier
     while(boucle){
         printf("\nChoix des formes :\n");
@@ -243,8 +165,5 @@ int add_new_form(void){
             break;
         }
     }
-    //fermeture du fichier
-    fprintf(file, "</svg>");
-    fclose(file);
     return 0;
 }
