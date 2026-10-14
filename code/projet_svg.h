@@ -19,16 +19,22 @@
         char *color;
         point *a;
         point *b;
-    }line;
+    }line_s;
 
     typedef struct circle_t{
         char *color;
         char *color_border;
         point *center;
         int radius;
-    }circle;
+    }circle_s;
+
+    typedef union figure_t{
+        line_s *line;
+        circle_s *circle;
+    }figure;
 
     //fonction pre-charger
+    void clear_stdin(void);
     int add_new_form(void);
     int edit_form(void);
 #endif

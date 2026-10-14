@@ -42,8 +42,6 @@ int main(void){
             break;
         }
         //vide l entrer clavier
-        if(getchar()!='\n'){
-            while (getchar() != '\n');
-        }
+        clear_stdin();
     }
 }

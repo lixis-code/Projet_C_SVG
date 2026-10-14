@@ -1,5 +1,11 @@
 #include "projet_svg.h"
 
+//fonction pour vider le tampon clavier
+void clear_stdin(void) {
+    int c;
+    while ((c = getc(stdin)) != '\n' && c != EOF);
+}
+
 // Fonction pour demander et valider une couleur hexadécimale (format RRGGBB)
 char* add_color(void) {
     char buffer[100];
@@ -12,8 +18,7 @@ char* add_color(void) {
             continue;
         }
         // Vide le reste du tampon clavier
-        int c;
-        while ((c = getchar()) != '\n' && c != EOF);
+        clear_stdin();
         // Vérification de la longueur
         if (strlen(buffer) != 6) {
             printf("Erreur : La couleur doit contenir exactement 6 caractères (ex: FFFFFF).\n");
@@ -39,23 +44,25 @@ char* add_color(void) {
     return color;
 }
 
+//fonction pour créé les points
 int add_new_point(point *p){
     int verif;
     do{
         printf("Entrer l'abscisse du point (entier positif inferieur a 500)\n");
         verif=scanf("%d",&p->x);
         //vide le buffer d entrer
-        while (getchar() != '\n');
+        clear_stdin();
     }while(verif !=1 || p->x<0 || p->x>500);
     do{
         printf("Entrer l'ordonnée du point (entier positif inferieur a 500)\n");
         verif=scanf("%d",&p->y);
         //vide le buffer d entrer
-        while (getchar() != '\n');
+        clear_stdin();
     }while(verif !=1 || p->y<0 || p->y>500);
     return 0;
 }
 
+//fonction pour créé le rayon
 int add_radius(void){
     int r;
     int verif;
@@ -63,51 +70,58 @@ int add_radius(void){
         printf("Entrer le rayon (entier positif)\n");
         verif=scanf("%d",&r);
         //vide le buffer d entrer
-        while (getchar() != '\n');
+        clear_stdin();
     }while(verif !=1 || r<=0);
     return r;
 }
 
+//fonction pour créé les cercles
 int add_new_circle(FILE *file){
-    circle *c=malloc(sizeof(circle));
+    figure *c=malloc(sizeof(circle_s));
+    c->circle=malloc(sizeof(circle_s));
     //centre
-    c->center=malloc(sizeof(point));
-    add_new_point(c->center);
+    c->circle->center=malloc(sizeof(point));
+    add_new_point(c->circle->center);
     //rayon
-    c->radius=add_radius();
+    c->circle->radius=add_radius();
     //couleur
-    c->color_border=add_color();
-    c->color=add_color();
+    c->circle->color_border=add_color();
+    c->circle->color=add_color();
     //ajout de la ligne
-    fprintf(file,"<circle cx=\"%d\" cy=\"%d\" r=\"%d\" stroke=\"#%s\" fill=\"#%s\"/>\n", c->center->x, c->center->y, c->radius, c->color_border, c->color);
+    fprintf(file,"<circle cx=\"%d\" cy=\"%d\" r=\"%d\" stroke=\"#%s\" fill=\"#%s\"/>\n", c->circle->center->x, c->circle->center->y, c->circle->radius, c->circle->color_border, c->circle->color);
     //liberation de la memoire allouer
-    free(c->center);
-    free(c->color);
-    free(c->color_border);
+    free(c->circle->center);
+    free(c->circle->color);
+    free(c->circle->color_border);
+    free(c->circle);
     free(c);
     return 0;
 }
 
+//fonction pour créé les lignes
 int add_new_line(FILE *file){
-    line *l=malloc(sizeof(line));
+    figure *l=malloc(sizeof(line_s));
+    l->line=malloc(sizeof(line_s));
     //point a
-    l->a=malloc(sizeof(point));
-    add_new_point(l->a);
+    l->line->a=malloc(sizeof(point));
+    add_new_point(l->line->a);
     //point b
-    l->b=malloc(sizeof(point));
-    add_new_point(l->b);
+    l->line->b=malloc(sizeof(point));
+    add_new_point(l->line->b);
     //couleur
-    l->color=add_color();
+    l->line->color=add_color();
     //ajoute de la ligne
-    fprintf(file,"<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" stroke=\"#%s\" />\n", l->a->x, l->a->y, l->b->x, l->b->y, l->color);
+    fprintf(file,"<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" stroke=\"#%s\" />\n", l->line->a->x, l->line->a->y, l->line->b->x, l->line->b->y, l->line->color);
     //liberation de la memoire allouer
-    free(l->color);
-    free(l->a);
-    free(l->b);
+    free(l->line->color);
+    free(l->line->a);
+    free(l->line->b);
+    free(l->line);
     free(l);
     return 0;
 }
 
+//fonction principal
 int add_new_form(void){
     unsigned char choice;
     bool boucle = true;
@@ -124,10 +138,6 @@ int add_new_form(void){
         printf("=> 0 - Quittez\n");
         printf("=> 1 - Ligne\n");
         printf("=> 2 - Cercle\n");
-        //vide l entrer clavier avant de demander l option
-        if(getchar()!='\n'){
-            while (getchar() != '\n');
-        }
         scanf(" %c",&choice);
         switch (choice){
         case '0':
@@ -143,6 +153,8 @@ int add_new_form(void){
             printf("Option invalide\n");
             break;
         }
+        //vide l entrer clavier avant de demander l option
+        clear_stdin();
     }
     //fermeture du fichier
     fprintf(file, "</svg>");
