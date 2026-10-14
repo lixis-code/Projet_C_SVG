@@ -1,5 +1,8 @@
 #include "projet_svg.h"
 
+// Définition de la scène globale
+Scene ma_scene = { .count = 0 };
+
 //fonction pour vider le tampon clavier
 void clear_stdin(void) {
     int c;
@@ -8,11 +11,11 @@ void clear_stdin(void) {
 
 // Fonction pour demander et valider une couleur hexadécimale (format RRGGBB)
 char* add_color(void) {
-    char buffer[100];
+    char buffer[20];
     bool valide = false;
     while (!valide) {
         printf("Entrez une couleur au format hexadécimal (ex: FF0000) : \n");
-        if (scanf("%99s", buffer) != 1) {
+        if (scanf("%19s", buffer) != 1) {
             // Vider le buffer en cas d'erreur de lecture
             while (getchar() != '\n');
             continue;
@@ -37,7 +40,7 @@ char* add_color(void) {
         }
     }
     // Allocation dynamique de la couleur validée
-    char *color = malloc(8 * sizeof(char));
+    char *color = malloc(6 * sizeof(char));
     if (color != NULL) {
         strcpy(color, buffer);
     }
@@ -74,7 +77,62 @@ int add_radius(void){
     }while(verif !=1 || r<=0);
     return r;
 }
+// Fonction pour créer les cercles et les ajouter à la liste chaînée
+int add_new_circle(void){
+    circle_s *c = malloc(sizeof(circle_s));
+    c->center = malloc(sizeof(point));
+    add_new_point(c->center);
+    c->radius = add_radius();
+    c->color_border = add_color();
+    c->color = add_color();
 
+    node_t *new_node = malloc(sizeof(node_t));
+    new_node->fig.circle = c;
+    new_node->type = CIRCLE;
+    new_node->next = NULL;
+
+    // Ajout en fin de liste
+    if (ma_scene.head == NULL) {
+        ma_scene.head = new_node;
+    } else {
+        node_t *current = ma_scene.head;
+        while (current->next != NULL) {
+            current = current->next;
+        }
+        current->next = new_node;
+    }
+    ma_scene.count++;
+    return 0;
+}
+
+// Fonction pour créer les lignes et les ajouter à la liste chaînée
+int add_new_line(void){
+    line_s *l = malloc(sizeof(line_s));
+    l->a = malloc(sizeof(point));
+    add_new_point(l->a);
+    l->b = malloc(sizeof(point));
+    add_new_point(l->b);
+    l->color = add_color();
+
+    node_t *new_node = malloc(sizeof(node_t));
+    new_node->fig.line = l;
+    new_node->type = LINE;
+    new_node->next = NULL;
+
+    // Ajout en fin de liste
+    if (ma_scene.head == NULL) {
+        ma_scene.head = new_node;
+    } else {
+        node_t *current = ma_scene.head;
+        while (current->next != NULL) {
+            current = current->next;
+        }
+        current->next = new_node;
+    }
+    ma_scene.count++;
+    return 0;
+}
+/*
 //fonction pour créé les cercles
 int add_new_circle(FILE *file){
     figure *c=malloc(sizeof(circle_s));
@@ -119,6 +177,34 @@ int add_new_line(FILE *file){
     free(l->line);
     free(l);
     return 0;
+}*/
+
+// Fonction pour exporter toute la liste chaînée vers le fichier HTML/SVG
+void save_scene_to_html(const char *filename) {
+    FILE *file = fopen(filename, "w");
+    if(file == NULL){
+        printf("Une erreur est survenue lors de l'ouverture du fichier HTML.\n");
+        return;
+    }
+
+    fprintf(file, "<svg viewBox=\"0 0 500 500\" xmlns=\"http://www.w3.org/2000/svg\">\n");
+
+    node_t *current = ma_scene.head;
+    while (current != NULL) {
+        if (current->type == LINE) {
+            line_s *l = current->fig.line;
+            fprintf(file, "  <line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" stroke=\"#%s\" />\n", 
+                    l->a->x, l->a->y, l->b->x, l->b->y, l->color);
+        } else if (current->type == CIRCLE) {
+            circle_s *c = current->fig.circle;
+            fprintf(file, "  <circle cx=\"%d\" cy=\"%d\" r=\"%d\" stroke=\"#%s\" fill=\"#%s\"/>\n", 
+                    c->center->x, c->center->y, c->radius, c->color_border, c->color);
+        }
+        current = current->next;
+    }
+
+    fprintf(file, "</svg>\n");
+    fclose(file);
 }
 
 //fonction principal
@@ -144,17 +230,18 @@ int add_new_form(void){
             boucle=false;
             break;
         case '1':
-            add_new_line(file);
+            clear_stdin();
+            add_new_line();
             break;
         case '2':
-            add_new_circle(file);
+            clear_stdin();
+            add_new_circle();
             break;
         default:
+            clear_stdin();
             printf("Option invalide\n");
             break;
         }
-        //vide l entrer clavier avant de demander l option
-        clear_stdin();
     }
     //fermeture du fichier
     fprintf(file, "</svg>");

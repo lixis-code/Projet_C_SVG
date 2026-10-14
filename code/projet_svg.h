@@ -8,6 +8,10 @@
     #include <string.h>
     #include <ctype.h>
 
+    typedef enum {
+        LINE,
+        CIRCLE
+    } figure_type_t;
     //couleur en exa sous la forme suivante #ffffff => stroke = border, fill = remplissage
     //variable
     typedef struct point_t{
@@ -32,6 +36,22 @@
         line_s *line;
         circle_s *circle;
     }figure;
+
+    // Élément de la liste chaînée
+    typedef struct node_t {
+        figure fig;
+        figure_type_t type;
+        struct node_t *next;
+    } node_t;
+
+    // Structure de la scène pointant vers le début de la liste
+    typedef struct {
+        node_t *head;
+        int count;
+    } Scene;
+
+    // Déclaration de la scène globale
+    extern Scene ma_scene;
 
     //fonction pre-charger
     void clear_stdin(void);
