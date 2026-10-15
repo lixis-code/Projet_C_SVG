@@ -5,16 +5,21 @@ void free_scene(void) {
     node_t *current = ma_scene.head;
     while (current != NULL) {
         node_t *next_node = current->next;
-        if (current->type == LINE) {
+        switch (current->type){
+        case LINE:
             free(current->fig.line->color);
             free(current->fig.line->a);
             free(current->fig.line->b);
             free(current->fig.line);
-        } else if (current->type == CIRCLE) {
+            break;
+        case CIRCLE:
             free(current->fig.circle->color);
             free(current->fig.circle->color_border);
             free(current->fig.circle->center);
             free(current->fig.circle);
+            break;
+        default:
+            break;
         }
         free(current);
         current = next_node;

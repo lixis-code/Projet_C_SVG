@@ -11,16 +11,21 @@ int edit_form(void) {
     
     node_t *current = ma_scene.head;
     int i = 0;
-    while (current != NULL) { //implementer un switch a therme
-        if (current->type == LINE) {
+    while (current != NULL) {
+        switch (current->type){
+        case LINE:
             printf("[%d] Ligne (Point A: %d,%d | Point B: %d,%d)\n", 
-                   i, current->fig.line->a->x, current->fig.line->a->y,
-                   current->fig.line->b->x, current->fig.line->b->y);
-        } else if (current->type == CIRCLE) {
+                i, current->fig.line->a->x, current->fig.line->a->y,
+                current->fig.line->b->x, current->fig.line->b->y);
+            break;
+        case CIRCLE:
             printf("[%d] Cercle (Centre: %d,%d | Rayon: %d)\n", 
-                   i, current->fig.circle->center->x, 
-                   current->fig.circle->center->y, 
-                   current->fig.circle->radius);
+                i, current->fig.circle->center->x, 
+                current->fig.circle->center->y, 
+                current->fig.circle->radius);
+            break;
+        default:
+            break;
         }
         current = current->next;
         i++;
@@ -48,7 +53,8 @@ int edit_form(void) {
     }
 
     // Modification selon le type (via l'énumérateur)
-    if (current->type == LINE) {
+    switch (current->type){
+    case LINE:
         printf("\nModification de la Ligne [%d]\n", index);
         printf("Nouveau point A :\n");
         add_new_point(current->fig.line->a);
@@ -58,7 +64,8 @@ int edit_form(void) {
         free(current->fig.line->color);
         printf("Nouvelle couleur :\n");
         current->fig.line->color = add_color();
-    } else if (current->type == CIRCLE) {
+        break;
+    case CIRCLE:
         printf("\nModification du Cercle [%d]\n", index);
         printf("Nouveau centre :\n");
         add_new_point(current->fig.circle->center);
@@ -72,6 +79,10 @@ int edit_form(void) {
         free(current->fig.circle->color);
         printf("Nouvelle couleur de remplissage :\n");
         current->fig.circle->color = add_color();
+        break;
+    default:
+        break;
     }
+
     return 0;
 }

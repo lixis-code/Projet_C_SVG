@@ -140,7 +140,7 @@ int add_new_line(void){
 int add_new_form(void){
     unsigned char choice;
     bool boucle = true;
-    //creation des forme dans le fichier
+    //creation des forme
     while(boucle){
         printf("\nChoix des formes :\n");
         printf("=> 0 - Quittez\n");
