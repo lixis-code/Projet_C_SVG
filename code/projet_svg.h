@@ -64,6 +64,7 @@
     void clear_stdin(void);
     int add_new_point(point *p);
     int add_radius(void);
+    void free_figure(node_t *current);
 
     //fonction principal des different programme
     int add_new_form(void);

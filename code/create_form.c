@@ -84,7 +84,9 @@ int add_new_circle(void){
     c->center = malloc(sizeof(point));
     add_new_point(c->center);
     c->radius = add_radius();
+    printf("Couleur de la bordure :\n");
     c->color_border = add_color();
+    printf("Couleur du fond :\n");
     c->color = add_color();
     c->translate_x = 0;
     c->translate_y = 0;

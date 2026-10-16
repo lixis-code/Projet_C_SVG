@@ -1,11 +1,7 @@
 #include "projet_svg.h"
 
-// Libération complète de la mémoire de la liste chaînée
-void free_scene(void) {
-    node_t *current = ma_scene.head;
-    while (current != NULL) {
-        node_t *next_node = current->next;
-        switch (current->type){
+void free_figure(node_t *current){
+    switch (current->type){
         case LINE:
             free(current->fig.line->color);
             free(current->fig.line->a);
@@ -22,6 +18,14 @@ void free_scene(void) {
             break;
         }
         free(current);
+}
+
+// Libération complète de la mémoire de la liste chaînée
+void free_scene(void) {
+    node_t *current = ma_scene.head;
+    while (current != NULL) {
+        node_t *next_node = current->next;
+        free_figure(current);
         current = next_node;
     }
     ma_scene.head = NULL;
