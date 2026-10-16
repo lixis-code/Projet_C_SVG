@@ -1,5 +1,6 @@
 #include "projet_svg.h"
 
+// Libération complète de la mémoire de la figure
 void free_figure(node_t *current){
     switch (current->type){
         case LINE:

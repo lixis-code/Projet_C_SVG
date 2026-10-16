@@ -223,13 +223,12 @@ int edit_form(void) {
         i++;
     }
 
-    printf("\nEntrez le numero de la forme a modifier (0 à %d) : ", ma_scene.count - 1);
-    if (scanf("%d", &index) != 1 || index < 0 || index >= ma_scene.count) {
+    int verif;
+    do{
+        printf("\nEntrez le numero de la forme a modifier (0 à %d) : ", ma_scene.count - 1);
+        verif=scanf("%d", &index);
         clear_stdin();
-        printf("Index invalide.\n");
-        return -1;
-    }
-    clear_stdin();
+    }while(verif !=1 || index < 0 || index >= ma_scene.count);
 
     // Recherche du nœud précédent et du nœud cible pour gérer la liste chaînée (notamment en cas de suppression)
     node_t *prev = NULL;

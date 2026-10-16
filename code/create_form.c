@@ -154,6 +154,9 @@ int add_new_form(void){
         printf("=> 0 - Quittez\n");
         printf("=> 1 - Ligne\n");
         printf("=> 2 - Cercle\n");
+        printf("=> 3 - Ellipse\n");
+        printf("=> 4 - Carré\n");
+        printf("=> 5 - Rectangle\n");
         scanf(" %c",&choice);
         clear_stdin();
         switch (choice){
@@ -165,6 +168,15 @@ int add_new_form(void){
             break;
         case '2':
             add_new_circle();
+            break;
+        case '3':
+            //elipse
+            break;
+        case '4':
+            //carre
+            break;
+        case '5':
+            //rectagle
             break;
         default:
             printf("Option invalide\n");

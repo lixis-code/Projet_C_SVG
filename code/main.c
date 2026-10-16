@@ -16,7 +16,7 @@ int main(void){
         printf("=> 5 - Visualiser le projet\n");
 
         scanf(" %c",&choice);
-        //vide l entrer clavier
+        //vide le buffer d entrer
         clear_stdin();
 
         //gestion des choix
