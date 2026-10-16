@@ -86,6 +86,9 @@ int add_new_circle(void){
     c->radius = add_radius();
     c->color_border = add_color();
     c->color = add_color();
+    c->translate_x = 0;
+    c->translate_y = 0;
+    c->rotate = 0;
 
     node_t *new_node = malloc(sizeof(node_t));
     new_node->fig.circle = c;
@@ -116,6 +119,9 @@ int add_new_line(void){
     printf("Point B :\n");
     add_new_point(l->b);
     l->color = add_color();
+    l->translate_x = 0;
+    l->translate_y = 0;
+    l->rotate = 0;
 
     node_t *new_node = malloc(sizeof(node_t));
     new_node->fig.line = l;
@@ -147,20 +153,18 @@ int add_new_form(void){
         printf("=> 1 - Ligne\n");
         printf("=> 2 - Cercle\n");
         scanf(" %c",&choice);
+        clear_stdin();
         switch (choice){
         case '0':
             boucle=false;
             break;
         case '1':
-            clear_stdin();
             add_new_line();
             break;
         case '2':
-            clear_stdin();
             add_new_circle();
             break;
         default:
-            clear_stdin();
             printf("Option invalide\n");
             break;
         }

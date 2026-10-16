@@ -16,6 +16,8 @@ int main(void){
         printf("=> 5 - Visualiser le projet\n");
 
         scanf(" %c",&choice);
+        //vide l entrer clavier
+        clear_stdin();
 
         //gestion des choix
         switch (choice){
@@ -30,10 +32,10 @@ int main(void){
             edit_form();
             break;
         case '3':
-            return 0;
+            printf("pas encore implementer\n");
             break;
         case '4':
-            return 0;
+            printf("pas encore implementer\n");
             break;
         case '5':
             save_scene_to_html();
@@ -42,7 +44,5 @@ int main(void){
             printf("\nCommande invalide\n");
             break;
         }
-        //vide l entrer clavier
-        clear_stdin();
     }
 }

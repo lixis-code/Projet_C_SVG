@@ -23,6 +23,9 @@
         char *color;
         point *a;
         point *b;
+        int translate_x;
+        int translate_y;
+        int rotate;
     }line_s;
 
     typedef struct circle_t{
@@ -30,6 +33,9 @@
         char *color_border;
         point *center;
         int radius;
+        int translate_x;
+        int translate_y;
+        int rotate;
     }circle_s;
 
     typedef union figure_t{
