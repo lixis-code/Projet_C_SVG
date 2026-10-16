@@ -111,7 +111,7 @@
     char* add_color(void);
     void clear_stdin(void);
     int add_new_point(point *p);
-    int add_radius(void);
+    int add_int(void);
     void free_figure(node_t *current);
 
     //fonction principal des different programme

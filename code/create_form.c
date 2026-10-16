@@ -3,13 +3,27 @@
 // Définition de la scène globale
 Scene ma_scene = { .count = 0 };
 
-//fonction pour vider le tampon clavier
+//fonction pour vider le buffer d'entrer
 void clear_stdin(void) {
     int c;
     while ((c = getc(stdin)) != '\n' && c != EOF);
 }
 
-// Fonction pour demander et valider une couleur hexadécimale (format RRGGBB)
+//ajout en fin de liste
+void add_to_scene(node_t *node){
+    if (ma_scene.head == NULL) {
+        ma_scene.head = node;
+    } else {
+        node_t *current = ma_scene.head;
+        while (current->next != NULL) {
+            current = current->next;
+        }
+        current->next = node;
+    }
+    ma_scene.count++;
+}
+
+//fonction pour demander et valider une couleur hexadécimale (format RRGGBB)
 char* add_color(void) {
     char buffer[20];
     bool valide = false;
@@ -66,11 +80,11 @@ int add_new_point(point *p){
 }
 
 //fonction pour créé le rayon
-int add_radius(void){
+int add_int(void){
     int r;
     int verif;
     do{
-        printf("Entrer le rayon (entier positif)\n");
+        printf("Entrer un entier positif\n");
         verif=scanf("%d",&r);
         //vide le buffer d entrer
         clear_stdin();
@@ -78,12 +92,89 @@ int add_radius(void){
     return r;
 }
 
-// Fonction pour créer les cercles et les ajouter à la liste chaînée
+// Fonction pour créer les rectangle
+int add_new_rectangle(void){
+    rectangle_s *r = malloc(sizeof(rectangle_s));
+    r->origin = malloc(sizeof(point));
+    add_new_point(r->origin);
+    printf("Couleur de la bordure :\n");
+    r->color_border = add_color();
+    printf("Couleur du fond :\n");
+    r->color = add_color();
+    r->translate_x = 0;
+    r->translate_y = 0;
+    r->rotate = 0;
+    printf("Largeur : ");
+    r->widht=add_int();
+    printf("Hauteur / Longueur : ");
+    r->height=add_int();
+
+    node_t *new_node = malloc(sizeof(node_t));
+    new_node->fig.rectangle = r;
+    new_node->type = RECTANGLE;
+    new_node->next = NULL;
+
+    add_to_scene(new_node);
+    return 0;
+}
+
+// Fonction pour créer les carré
+int add_new_square(void){
+    square_s *s = malloc(sizeof(square_s));
+    s->origin = malloc(sizeof(point));
+    add_new_point(s->origin);
+    printf("Couleur de la bordure :\n");
+    s->color_border = add_color();
+    printf("Couleur du fond :\n");
+    s->color = add_color();
+    s->translate_x = 0;
+    s->translate_y = 0;
+    s->rotate = 0;
+    printf("Largeur : ");
+    s->widht=add_int();
+
+    node_t *new_node = malloc(sizeof(node_t));
+    new_node->fig.square = s;
+    new_node->type = SQUARE;
+    new_node->next = NULL;
+
+    add_to_scene(new_node);
+    return 0;
+}
+
+// Fonction pour créer les ellipse
+int add_new_ellipse(void){
+    ellipse_s *e = malloc(sizeof(ellipse_s));
+    e->center = malloc(sizeof(point));
+    add_new_point(e->center);
+    printf("Rayon x : ");
+    e->radius_x = add_int();
+    printf("Rayon y: ");
+    e->radius_y = add_int();
+    printf("Couleur de la bordure :\n");
+    e->color_border = add_color();
+    printf("Couleur du fond :\n");
+    e->color = add_color();
+    e->translate_x = 0;
+    e->translate_y = 0;
+    e->rotate = 0;
+
+    node_t *new_node = malloc(sizeof(node_t));
+    new_node->fig.ellipse = e;
+    new_node->type = ELLIPSE;
+    new_node->next = NULL;
+
+    add_to_scene(new_node);
+    return 0;
+}
+
+// Fonction pour créer les cercles
 int add_new_circle(void){
     circle_s *c = malloc(sizeof(circle_s));
     c->center = malloc(sizeof(point));
     add_new_point(c->center);
-    c->radius = add_radius();
+    printf("Rayon : ");
+    c->radius = add_int();
     printf("Couleur de la bordure :\n");
     c->color_border = add_color();
     printf("Couleur du fond :\n");
@@ -97,21 +188,11 @@ int add_new_circle(void){
     new_node->type = CIRCLE;
     new_node->next = NULL;
 
-    // Ajout en fin de liste
-    if (ma_scene.head == NULL) {
-        ma_scene.head = new_node;
-    } else {
-        node_t *current = ma_scene.head;
-        while (current->next != NULL) {
-            current = current->next;
-        }
-        current->next = new_node;
-    }
-    ma_scene.count++;
+    add_to_scene(new_node);
     return 0;
 }
 
-// Fonction pour créer les lignes et les ajouter à la liste chaînée
+// Fonction pour créer les lignes
 int add_new_line(void){
     line_s *l = malloc(sizeof(line_s));
     l->a = malloc(sizeof(point));
@@ -130,17 +211,7 @@ int add_new_line(void){
     new_node->type = LINE;
     new_node->next = NULL;
 
-    // Ajout en fin de liste
-    if (ma_scene.head == NULL) {
-        ma_scene.head = new_node;
-    } else {
-        node_t *current = ma_scene.head;
-        while (current->next != NULL) {
-            current = current->next;
-        }
-        current->next = new_node;
-    }
-    ma_scene.count++;
+    add_to_scene(new_node);
     return 0;
 }
 
@@ -170,13 +241,13 @@ int add_new_form(void){
             add_new_circle();
             break;
         case '3':
-            //elipse
+            add_new_ellipse();
             break;
         case '4':
-            //carre
+            add_new_square();
             break;
         case '5':
-            //rectagle
+            add_new_rectangle();
             break;
         default:
             printf("Option invalide\n");

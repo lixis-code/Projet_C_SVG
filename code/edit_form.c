@@ -64,7 +64,7 @@ int modification_circle(node_t *current, int index){
             break;
         case '2':
             printf("Nouveau rayon :\n");
-            current->fig.circle->radius = add_radius();
+            current->fig.circle->radius = add_int();
             return 0;
             break;
         case '3':
@@ -84,7 +84,7 @@ int modification_circle(node_t *current, int index){
             add_new_point(current->fig.circle->center);
             
             printf("Nouveau rayon :\n");
-            current->fig.circle->radius = add_radius();
+            current->fig.circle->radius = add_int();
             
             free(current->fig.circle->color_border);
             printf("Nouvelle couleur de bordure :\n");
@@ -93,6 +93,193 @@ int modification_circle(node_t *current, int index){
             free(current->fig.circle->color);
             printf("Nouvelle couleur de remplissage :\n");
             current->fig.circle->color = add_color();
+            return 0;
+            break;
+        default:
+            printf("Choix invalide\n");
+            break;
+        }
+    }
+}
+
+int modification_ellipse(node_t *current, int index){
+    char choice;
+    printf("\nModification de l ellipse [%d]\n", index);
+    printf("=> 1 : Centre\n");
+    printf("=> 2 : Rayon x\n");
+    printf("=> 3 : Rayon y\n");
+    printf("=> 4 : Couleur de la bordure\n");
+    printf("=> 5 : Couleur du fond\n");
+    printf("=> 6 : Tout\n");
+    while(1){
+        scanf(" %c",&choice);
+        clear_stdin();
+        switch (choice){
+        case '1':
+            printf("Nouveau centre :\n");
+            add_new_point(current->fig.ellipse->center);
+            return 0;
+            break;
+        case '2':
+            printf("Nouveau rayon x :\n");
+            current->fig.ellipse->radius_x = add_int();
+            return 0;
+            break;
+        case '3':
+            printf("Nouveau rayon y :\n");
+            current->fig.ellipse->radius_y = add_int();
+            return 0;
+            break;
+        case '4':
+            free(current->fig.ellipse->color_border);
+            printf("Nouvelle couleur de bordure :\n");
+            current->fig.ellipse->color_border = add_color();
+            return 0;
+            break;
+        case '5':
+            free(current->fig.ellipse->color);
+            printf("Nouvelle couleur de remplissage :\n");
+            current->fig.ellipse->color = add_color();
+            return 0;
+            break;
+        case '6':
+            printf("Nouveau centre :\n");
+            add_new_point(current->fig.ellipse->center);
+            
+            printf("Nouveau rayon x :\n");
+            current->fig.ellipse->radius_x = add_int();
+            printf("Nouveau rayon y :\n");
+            current->fig.ellipse->radius_y = add_int();
+            
+            free(current->fig.ellipse->color_border);
+            printf("Nouvelle couleur de bordure :\n");
+            current->fig.ellipse->color_border = add_color();
+            
+            free(current->fig.ellipse->color);
+            printf("Nouvelle couleur de remplissage :\n");
+            current->fig.ellipse->color = add_color();
+            return 0;
+            break;
+        default:
+            printf("Choix invalide\n");
+            break;
+        }
+    }
+}
+
+int modification_square(node_t *current, int index){
+    char choice;
+    printf("\nModification du carré [%d]\n", index);
+    printf("=> 1 : Origine\n");
+    printf("=> 2 : Largeur\n");
+    printf("=> 3 : Couleur de la bordure\n");
+    printf("=> 4 : Couleur du fond\n");
+    printf("=> 5 : Tout\n");
+    while(1){
+        scanf(" %c",&choice);
+        clear_stdin();
+        switch (choice){
+        case '1':
+            printf("Nouvelle origine :\n");
+            add_new_point(current->fig.square->origin);
+            return 0;
+            break;
+        case '2':
+            printf("Nouvelle largeur :\n");
+            current->fig.square->widht = add_int();
+            return 0;
+            break;
+        case '3':
+            free(current->fig.square->color_border);
+            printf("Nouvelle couleur de bordure :\n");
+            current->fig.square->color_border = add_color();
+            return 0;
+            break;
+        case '4':
+            free(current->fig.square->color);
+            printf("Nouvelle couleur de remplissage :\n");
+            current->fig.square->color = add_color();
+            return 0;
+            break;
+        case '5':
+            printf("Nouvelle origine :\n");
+            add_new_point(current->fig.square->origin);
+            
+            printf("Nouvelle largeur :\n");
+            current->fig.square->widht = add_int();
+            
+            free(current->fig.square->color_border);
+            printf("Nouvelle couleur de bordure :\n");
+            current->fig.square->color_border = add_color();
+            
+            free(current->fig.square->color);
+            printf("Nouvelle couleur de remplissage :\n");
+            current->fig.square->color = add_color();
+            return 0;
+            break;
+        default:
+            printf("Choix invalide\n");
+            break;
+        }
+    }
+}
+
+int modification_rectangle(node_t *current, int index){
+    char choice;
+    printf("\nModification du rectangle [%d]\n", index);
+    printf("=> 1 : Origine\n");
+    printf("=> 2 : Largeur\n");
+    printf("=> 3 : Longueur\n");
+    printf("=> 4 : Couleur de la bordure\n");
+    printf("=> 5 : Couleur du fond\n");
+    printf("=> 6 : Tout\n");
+    while(1){
+        scanf(" %c",&choice);
+        clear_stdin();
+        switch (choice){
+        case '1':
+            printf("Nouvelle origine :\n");
+            add_new_point(current->fig.rectangle->origin);
+            return 0;
+            break;
+        case '2':
+            printf("Nouvelle largeur :\n");
+            current->fig.rectangle->widht = add_int();
+            return 0;
+            break;
+        case '3':
+            printf("Nouvelle longueur :\n");
+            current->fig.rectangle->height = add_int();
+            return 0;
+            break;
+        case '4':
+            free(current->fig.rectangle->color_border);
+            printf("Nouvelle couleur de bordure :\n");
+            current->fig.rectangle->color_border = add_color();
+            return 0;
+            break;
+        case '5':
+            free(current->fig.rectangle->color);
+            printf("Nouvelle couleur de remplissage :\n");
+            current->fig.rectangle->color = add_color();
+            return 0;
+            break;
+        case '6':
+            printf("Nouveau centre :\n");
+            add_new_point(current->fig.rectangle->origin);
+            
+            printf("Nouvelle largeur :\n");
+            current->fig.rectangle->widht = add_int();
+            printf("Nouvelle lougueur :\n");
+            current->fig.rectangle->height = add_int();
+            
+            free(current->fig.rectangle->color_border);
+            printf("Nouvelle couleur de bordure :\n");
+            current->fig.rectangle->color_border = add_color();
+            
+            free(current->fig.rectangle->color);
+            printf("Nouvelle couleur de remplissage :\n");
+            current->fig.rectangle->color = add_color();
             return 0;
             break;
         default:
@@ -111,6 +298,15 @@ int modification(node_t *current, int index){
     case CIRCLE:
         modification_circle(current, index);
         break;
+    case ELLIPSE:
+        modification_ellipse(current, index);
+        break;
+    case SQUARE:
+        modification_square(current, index);
+        break;
+    case RECTANGLE:
+        modification_rectangle(current, index);
+        break;
     default:
         printf("une erreur est survenu\n");
         return -1;
@@ -122,21 +318,39 @@ int modification(node_t *current, int index){
 
 int translate(node_t *current){
     int tx, ty;
-    printf("Entrez le décalage en X (translate_x) : ");
-    scanf("%d", &tx);
-    clear_stdin();
-    printf("Entrez le décalage en Y (translate_y) : ");
-    scanf("%d", &ty);
-    clear_stdin();
+    bool verif;
+    do{
+        printf("Entrez le décalage en X (translate_x) : ");
+        verif=scanf("%d", &tx);
+        clear_stdin();
+    }while(verif!=1);
+    verif=0;
+    do{
+        printf("Entrez le décalage en Y (translate_y) : ");
+        verif=scanf("%d", &ty);
+        clear_stdin();
+    }while(verif!=1);
 
     switch (current->type){
     case LINE:
-        current->fig.line->translate_x = tx;
-        current->fig.line->translate_y = ty;
+        current->fig.line->translate_x=tx;
+        current->fig.line->translate_y=ty;
         break;
     case CIRCLE:
-        current->fig.circle->translate_x = tx;
-        current->fig.circle->translate_y = ty;
+        current->fig.circle->translate_x=tx;
+        current->fig.circle->translate_y=ty;
+        break;
+    case ELLIPSE:
+        current->fig.ellipse->translate_x=tx;
+        current->fig.ellipse->translate_y=ty;
+        break;
+    case SQUARE:
+        current->fig.square->translate_x=tx;
+        current->fig.square->translate_y=ty;
+        break;
+    case RECTANGLE:
+        current->fig.rectangle->translate_x=tx;
+        current->fig.rectangle->translate_y=ty;
         break;
     default:
         printf("Une erreur est survenu\n");
@@ -149,16 +363,28 @@ int translate(node_t *current){
 
 int rotate(node_t *current){
     int angle;
-    printf("Entrez l'angle de rotation en degrés : ");
-    scanf("%d", &angle);
-    clear_stdin();
+    bool verif;
+    do{
+        printf("Entrez l'angle de rotation en degrés : ");
+        verif=scanf("%d", &angle);
+        clear_stdin();
+    }while(verif!=1);
 
     switch (current->type){
     case LINE:
-        current->fig.line->rotate = angle;
+        current->fig.line->rotate=angle;
         break;
     case CIRCLE:
-        current->fig.circle->rotate = angle;
+        current->fig.circle->rotate=angle;
+        break;
+    case ELLIPSE:
+        current->fig.ellipse->rotate=angle;
+        break;
+    case SQUARE:
+        current->fig.square->rotate=angle;
+        break;
+    case RECTANGLE:
+        current->fig.rectangle->rotate=angle;
         break;
     default:
         printf("Une erreur est survenu\n");
@@ -201,18 +427,38 @@ int edit_form(void) {
         switch (current->type){
         case LINE:
             printf("[%d] Ligne (Point A: %d,%d | Point B: %d,%d | Trans: %d,%d | Rot: %d°)\n", 
-                   i, current->fig.line->a->x, current->fig.line->a->y,
-                   current->fig.line->b->x, current->fig.line->b->y,
-                   current->fig.line->translate_x, current->fig.line->translate_y,
-                   current->fig.line->rotate);
+                i, current->fig.line->a->x, current->fig.line->a->y,
+                current->fig.line->b->x, current->fig.line->b->y,
+                current->fig.line->translate_x, current->fig.line->translate_y,
+                current->fig.line->rotate);
             break;
         case CIRCLE:
             printf("[%d] Cercle (Centre: %d,%d | Rayon: %d | Trans: %d,%d | Rot: %d°)\n", 
-                   i, current->fig.circle->center->x, 
-                   current->fig.circle->center->y, 
-                   current->fig.circle->radius,
-                   current->fig.circle->translate_x, current->fig.circle->translate_y,
-                   current->fig.circle->rotate);
+                i, current->fig.circle->center->x, current->fig.circle->center->y, 
+                current->fig.circle->radius,
+                current->fig.circle->translate_x, current->fig.circle->translate_y,
+                current->fig.circle->rotate);
+            break;
+        case ELLIPSE:
+            printf("[%d] Ellipse (Centre: %d,%d | Rayon x: %d | Rayon y: %d | Trans: %d,%d | Rot: %d°)\n",
+                i, current->fig.ellipse->center->x, current->fig.ellipse->center->y,
+                current->fig.ellipse->radius_x, current->fig.ellipse->radius_y,
+                current->fig.ellipse->translate_x, current->fig.ellipse->translate_y,
+                current->fig.ellipse->rotate);
+            break;
+        case SQUARE:
+            printf("[%d] Carré (Origine: %d,%d | Largeur: %d | Trans: %d,%d | Rot: %d°)\n",
+                i, current->fig.square->origin->x, current->fig.square->origin->y,
+                current->fig.square->widht,
+                current->fig.square->translate_x, current->fig.square->translate_y,
+                current->fig.square->rotate);
+            break;
+        case RECTANGLE:
+            printf("[%d] Rectangle (Origine: %d;%d | Largeur: %d | Longueur: %d | Trans: %d,%d | Rot: %d°)\n",
+                i, current->fig.rectangle->origin->x, current->fig.rectangle->origin->y,
+                current->fig.rectangle->widht, current->fig.rectangle->height,
+                current->fig.rectangle->translate_x, current->fig.rectangle->translate_y,
+                current->fig.rectangle->rotate);
             break;
         default:
             printf("Une erreur est survenu\n");
@@ -248,7 +494,7 @@ int edit_form(void) {
     // Sous-menu d'édition
     unsigned char sub_choice;
     printf("\nOptions d'edition pour la forme [%d] :\n", index);
-    printf("=> 1 - Modifier les parametres de base (points/couleurs/rayons)\n");
+    printf("=> 1 - Modifier les parametres de base (points/couleurs/rayons...)\n");
     printf("=> 2 - Deplacer (Translate)\n");
     printf("=> 3 - Pivoter (Rotate)\n");
     printf("=> 4 - Supprimer la figure\n");

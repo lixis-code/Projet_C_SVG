@@ -15,6 +15,24 @@ void free_figure(node_t *current){
             free(current->fig.circle->center);
             free(current->fig.circle);
             break;
+        case ELLIPSE:
+            free(current->fig.ellipse->center);
+            free(current->fig.ellipse->color_border);
+            free(current->fig.ellipse->color);
+            free(current->fig.ellipse);
+            break;
+        case SQUARE:
+            free(current->fig.square->origin);
+            free(current->fig.square->color_border);
+            free(current->fig.square->color);
+            free(current->fig.square);
+            break;
+        case RECTANGLE:
+            free(current->fig.rectangle->origin);
+            free(current->fig.rectangle->color_border);
+            free(current->fig.rectangle->color);
+            free(current->fig.rectangle);
+            break;
         default:
             break;
         }
