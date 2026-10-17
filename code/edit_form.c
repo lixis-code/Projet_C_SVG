@@ -411,6 +411,47 @@ int delete(node_t *current, node_t *prev){
     return 0;
 }
 
+//affichage line
+void print_line(node_t *current, int i){
+    printf("[%d] Ligne (Point A: %d,%d | Point B: %d,%d | Trans: %d,%d | Rot: %d°)\n", 
+        i, current->fig.line->a->x, current->fig.line->a->y,
+        current->fig.line->b->x, current->fig.line->b->y,
+        current->fig.line->translate_x, current->fig.line->translate_y,
+        current->fig.line->rotate);
+}
+//affichage cercle
+void print_circle(node_t *current, int i){
+    printf("[%d] Cercle (Centre: %d,%d | Rayon: %d | Trans: %d,%d | Rot: %d°)\n", 
+        i, current->fig.circle->center->x, current->fig.circle->center->y, 
+        current->fig.circle->radius,
+        current->fig.circle->translate_x, current->fig.circle->translate_y,
+        current->fig.circle->rotate);
+}
+//affichage ellipse
+void print_ellipse(node_t *current, int i){
+    printf("[%d] Ellipse (Centre: %d,%d | Rayon x: %d | Rayon y: %d | Trans: %d,%d | Rot: %d°)\n",
+        i, current->fig.ellipse->center->x, current->fig.ellipse->center->y,
+        current->fig.ellipse->radius_x, current->fig.ellipse->radius_y,
+        current->fig.ellipse->translate_x, current->fig.ellipse->translate_y,
+        current->fig.ellipse->rotate);
+}
+//affichage carré
+void print_square(node_t *current, int i){
+    printf("[%d] Carré (Origine: %d,%d | Largeur: %d | Trans: %d,%d | Rot: %d°)\n",
+        i, current->fig.square->origin->x, current->fig.square->origin->y,
+        current->fig.square->widht,
+        current->fig.square->translate_x, current->fig.square->translate_y,
+        current->fig.square->rotate);
+}
+//affichage rectangle
+void print_rectangle(node_t *current, int i){
+    printf("[%d] Rectangle (Origine: %d;%d | Largeur: %d | Longueur: %d | Trans: %d,%d | Rot: %d°)\n",
+        i, current->fig.rectangle->origin->x, current->fig.rectangle->origin->y,
+        current->fig.rectangle->widht, current->fig.rectangle->height,
+        current->fig.rectangle->translate_x, current->fig.rectangle->translate_y,
+        current->fig.rectangle->rotate);
+}
+
 //fonction principal
 int edit_form(void) {
     if (ma_scene.count == 0 || ma_scene.head == NULL) {
@@ -426,39 +467,19 @@ int edit_form(void) {
     while (current != NULL) {
         switch (current->type){
         case LINE:
-            printf("[%d] Ligne (Point A: %d,%d | Point B: %d,%d | Trans: %d,%d | Rot: %d°)\n", 
-                i, current->fig.line->a->x, current->fig.line->a->y,
-                current->fig.line->b->x, current->fig.line->b->y,
-                current->fig.line->translate_x, current->fig.line->translate_y,
-                current->fig.line->rotate);
+            print_line(current, i);
             break;
         case CIRCLE:
-            printf("[%d] Cercle (Centre: %d,%d | Rayon: %d | Trans: %d,%d | Rot: %d°)\n", 
-                i, current->fig.circle->center->x, current->fig.circle->center->y, 
-                current->fig.circle->radius,
-                current->fig.circle->translate_x, current->fig.circle->translate_y,
-                current->fig.circle->rotate);
+            print_circle(current, i);
             break;
         case ELLIPSE:
-            printf("[%d] Ellipse (Centre: %d,%d | Rayon x: %d | Rayon y: %d | Trans: %d,%d | Rot: %d°)\n",
-                i, current->fig.ellipse->center->x, current->fig.ellipse->center->y,
-                current->fig.ellipse->radius_x, current->fig.ellipse->radius_y,
-                current->fig.ellipse->translate_x, current->fig.ellipse->translate_y,
-                current->fig.ellipse->rotate);
+            print_ellipse(current, i);
             break;
         case SQUARE:
-            printf("[%d] Carré (Origine: %d,%d | Largeur: %d | Trans: %d,%d | Rot: %d°)\n",
-                i, current->fig.square->origin->x, current->fig.square->origin->y,
-                current->fig.square->widht,
-                current->fig.square->translate_x, current->fig.square->translate_y,
-                current->fig.square->rotate);
+            print_square(current, i);
             break;
         case RECTANGLE:
-            printf("[%d] Rectangle (Origine: %d;%d | Largeur: %d | Longueur: %d | Trans: %d,%d | Rot: %d°)\n",
-                i, current->fig.rectangle->origin->x, current->fig.rectangle->origin->y,
-                current->fig.rectangle->widht, current->fig.rectangle->height,
-                current->fig.rectangle->translate_x, current->fig.rectangle->translate_y,
-                current->fig.rectangle->rotate);
+            print_rectangle(current, i);
             break;
         default:
             printf("Une erreur est survenu\n");
@@ -471,7 +492,7 @@ int edit_form(void) {
 
     int verif;
     do{
-        printf("\nEntrez le numero de la forme a modifier (0 à %d) : ", ma_scene.count - 1);
+        printf("\nEntrez le numero de la forme à modifier (0 à %d) : ", ma_scene.count - 1);
         verif=scanf("%d", &index);
         clear_stdin();
     }while(verif !=1 || index < 0 || index >= ma_scene.count);
@@ -505,18 +526,15 @@ int edit_form(void) {
         case '1': // Modification classique
             modification(current, index);
             break;
-
         case '2': // Déplacement (Translate)
             translate(current);
             break;
         case '3': // Rotation (Rotate)
             rotate(current);
             break;
-
         case '4': // Suppression avec ré-attachement de la liste
             delete(current, prev);
             break;
-
         default:
             printf("Option invalide.\n");
             break;
