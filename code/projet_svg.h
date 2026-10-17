@@ -13,11 +13,14 @@
         CIRCLE,
         ELLIPSE,
         SQUARE,
-        RECTANGLE
+        RECTANGLE,
+        MULTI_LINE,
+        POLYGONE
     } figure_type_t;
 
     //couleur en exa sous la forme suivante #ffffff => stroke = border, fill = remplissage
     //variable
+
     //point
     typedef struct point_t{
         int x;
@@ -46,7 +49,7 @@
     }circle_s;
 
     //ellipse
-    typedef struct ellipse_t{ //<ellipse cx="100" cy="50" rx="100" ry="50" />
+    typedef struct ellipse_t{
         char *color;
         char *color_border;
         point *center;
@@ -58,7 +61,7 @@
     }ellipse_s;
 
     //carré
-    typedef struct square_t{//<rect x="0" y="0" width="100" height="100" /> on donnera la meme valeur a width et height
+    typedef struct square_t{
         char *color;
         char *color_border;
         point *origin;
@@ -69,7 +72,7 @@
     }square_s;
 
     //rectangle
-    typedef struct rectangle_t{//<rect x="0" y="0" width="100" height="100" />
+    typedef struct rectangle_t{
         char *color;
         char *color_border;
         point *origin;
@@ -80,7 +83,27 @@
         int rotate;
     }rectangle_s;
     
-    //ajouter enchainement de ligne / trajectoire (chemin) / polygone / groupe
+    //multi-ligne
+    typedef struct multi_line_t{
+        char *color;
+        point *points;
+        int nb_points;
+        int translate_x;
+        int translate_y;
+        int rotate;
+    }multi_line_s;
+
+    typedef struct polygone_t{
+        char *color;
+        char *color_border;
+        point *points;
+        int nb_points;
+        int translate_x;
+        int translate_y;
+        int rotate;
+    }polygone_s;
+
+    //ajouter trajectoire (chemin) / groupe
 
     //figures
     typedef union figure_t{
@@ -89,6 +112,8 @@
         ellipse_s *ellipse;
         square_s *square;
         rectangle_s *rectangle;
+        multi_line_s *multi_line;
+        polygone_s *polygone;
     }figure;
 
     // Élément de la liste chaînée

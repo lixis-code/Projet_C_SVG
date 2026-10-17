@@ -23,6 +23,18 @@ void add_to_scene(node_t *node){
     ma_scene.count++;
 }
 
+//fonction qui demande le nombre de point souhaiter
+int add_nb_points(int min_points) {
+    int n;
+    int verif;
+    do {
+        printf("Entrer le nombre de points (minimum %d) : ", min_points);
+        verif = scanf("%d", &n);
+        clear_stdin();
+    } while (verif != 1 || n < min_points);
+    return n;
+}
+
 //fonction pour demander et valider une couleur hexadécimale (format RRGGBB)
 char* add_color(void) {
     char buffer[20];
@@ -215,6 +227,55 @@ int add_new_line(void){
     return 0;
 }
 
+// Fonction pour créé les multi ligne
+int add_new_multi_line(void){
+    multi_line_s *ml=malloc(sizeof(multi_line_s));
+    ml->nb_points=add_nb_points(3);
+    ml->points=malloc(ml->nb_points*sizeof(point));
+    for(int i=0; i < ml->nb_points; i++){
+        printf("Saisie du point %d :\n", i+1);
+        add_new_point(&ml->points[i]);
+    }
+    ml->color=add_color();
+    ml->translate_x=0;
+    ml->translate_y=0;
+    ml->rotate=0;
+
+    node_t *new_node=malloc(sizeof(node_t));
+    new_node->fig.multi_line=ml;
+    new_node->type=MULTI_LINE;
+    new_node->next=NULL;
+
+    add_to_scene(new_node);
+    return 0;
+}
+
+// Fonction pour créé les multi ligne
+int add_new_polygone(void){
+    polygone_s *p=malloc(sizeof(polygone_s));
+    p->nb_points=add_nb_points(3);
+    p->points=malloc(p->nb_points*sizeof(point));
+    for(int i=0; i < p->nb_points; i++){
+        printf("Saisie du point %d :\n", i+1);
+        add_new_point(&p->points[i]);
+    }
+    printf("Couleur de la bordure :\n");
+    p->color_border=add_color();
+    printf("Couleur du fond :\n");
+    p->color=add_color();
+    p->translate_x=0;
+    p->translate_y=0;
+    p->rotate=0;
+
+    node_t *new_node=malloc(sizeof(node_t));
+    new_node->fig.polygone=p;
+    new_node->type=POLYGONE;
+    new_node->next=NULL;
+
+    add_to_scene(new_node);
+    return 0;
+}
+
 //fonction principal
 int add_new_form(void){
     unsigned char choice;
@@ -228,6 +289,8 @@ int add_new_form(void){
         printf("=> 3 - Ellipse\n");
         printf("=> 4 - Carré\n");
         printf("=> 5 - Rectangle\n");
+        printf("=> 6 - Multi ligne\n");
+        printf("=> 7 - Polygone\n");
         scanf(" %c",&choice);
         clear_stdin();
         switch (choice){
@@ -248,6 +311,12 @@ int add_new_form(void){
             break;
         case '5':
             add_new_rectangle();
+            break;
+        case '6':
+            add_new_multi_line();
+            break;
+        case '7':
+            add_new_polygone();
             break;
         default:
             printf("Option invalide\n");

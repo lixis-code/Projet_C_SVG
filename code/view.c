@@ -45,6 +45,32 @@ void print_rectangle_to_html(FILE *file, node_t *current){
         current->fig.rectangle->translate_x, current->fig.rectangle->translate_y,
         current->fig.rectangle->rotate);
 }
+//ajout de multi ligne dans le html
+void print_multi_line_to_html(FILE *file, node_t *current){
+    char points_buf[1024]="";
+    for(int i=0; i < current->fig.multi_line->nb_points; i++){
+        char m_str[32];
+        sprintf(m_str, "%d,%d ", current->fig.multi_line->points[i].x, current->fig.multi_line->points[i].y);
+        strcat(points_buf, m_str);
+    }
+    fprintf(file, "  <polyline points=\"%s\" stroke=\"#%s\" fill=\"none\" transform=\"translate(%d,%d) rotate(%d)\"/>\n",
+        points_buf, current->fig.multi_line->color,
+        current->fig.multi_line->translate_x, current->fig.multi_line->translate_y,
+        current->fig.multi_line->rotate);
+}
+//ajout de polygone dans le html
+void print_polygone_to_html(FILE *file, node_t *current){
+    char points_buf[1024]="";
+    for(int i=0; i < current->fig.polygone->nb_points; i++){
+        char p_str[32];
+        sprintf(p_str, "%d,%d ", current->fig.polygone->points[i].x, current->fig.polygone->points[i].y);
+        strcat(points_buf, p_str);
+    }
+    fprintf(file, "  <polygon points=\"%s\" stroke=\"#%s\" fill=\"#%s\" transform=\"translate(%d,%d) rotate(%d)\"/>\n",
+        points_buf, current->fig.polygone->color_border, current->fig.polygone->color,
+        current->fig.polygone->translate_x, current->fig.polygone->translate_y,
+        current->fig.polygone->rotate);
+}
 
 // Fonction pour exporter toute la liste chaînée vers le fichier HTML/SVG
 void save_scene_to_html(void) {
@@ -74,12 +100,17 @@ void save_scene_to_html(void) {
         case RECTANGLE:
             print_rectangle_to_html(file, current);
             break;
+        case MULTI_LINE:
+            print_multi_line_to_html(file, current);
+            break;
+        case POLYGONE:
+            print_polygone_to_html(file, current);
+            break;
         default:
             break;
         }
         current = current->next;
     }
-
     fprintf(file, "</svg>\n");
     fclose(file);
 /*

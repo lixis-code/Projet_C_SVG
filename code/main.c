@@ -1,11 +1,8 @@
 #include "projet_svg.h"
-
+//fonction principal
 int main(void){
     unsigned char choice;
-
     printf("------------Projet C SVG------------\n");
-
-    //interface utilisateur console
     while(1){
         printf("\nListe des option :\n");
         printf("=> 0 - Quittez\n");
@@ -14,11 +11,9 @@ int main(void){
         printf("=> 3 - Sauvegarder le projet\n");
         printf("=> 4 - Charger un projet\n");
         printf("=> 5 - Visualiser le projet\n");
-
         scanf(" %c",&choice);
         //vide le buffer d entrer
         clear_stdin();
-
         //gestion des choix
         switch (choice){
         case '0':
