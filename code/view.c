@@ -1,5 +1,21 @@
 #include "projet_svg.h"
 
+//fonction pour recuperer tout les point d une liste chainer
+void print_points_list(point_node_t *pt_curr, char *buffer, size_t max_size){
+    buffer[0] = '\0'; // Initialise le buffer comme une chaîne vide
+    
+    while (pt_curr != NULL) {
+        char pt_str[32];
+        sprintf(pt_str, "%d,%d ", pt_curr->pt.x, pt_curr->pt.y);
+        
+        // Sécurité pour éviter le dépassement de mémoire du buffer
+        if (strlen(buffer) + strlen(pt_str) < max_size) {
+            strcat(buffer, pt_str);
+        }
+        pt_curr = pt_curr->next;
+    }
+}
+
 //ajout de line dans le html
 void print_line_to_html(FILE *file, node_t *current){
     fprintf(file, "  <line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" stroke=\"#%s\" transform=\"translate(%d,%d) rotate(%d)\"/>\n", 
@@ -48,11 +64,7 @@ void print_rectangle_to_html(FILE *file, node_t *current){
 //ajout de multi ligne dans le html
 void print_multi_line_to_html(FILE *file, node_t *current){
     char points_buf[1024]="";
-    for(int i=0; i < current->fig.multi_line->nb_points; i++){
-        char m_str[32];
-        sprintf(m_str, "%d,%d ", current->fig.multi_line->points[i].x, current->fig.multi_line->points[i].y);
-        strcat(points_buf, m_str);
-    }
+    print_points_list(current->fig.multi_line->point_head, points_buf, sizeof(points_buf));
     fprintf(file, "  <polyline points=\"%s\" stroke=\"#%s\" fill=\"none\" transform=\"translate(%d,%d) rotate(%d)\"/>\n",
         points_buf, current->fig.multi_line->color,
         current->fig.multi_line->translate_x, current->fig.multi_line->translate_y,
@@ -61,11 +73,7 @@ void print_multi_line_to_html(FILE *file, node_t *current){
 //ajout de polygone dans le html
 void print_polygone_to_html(FILE *file, node_t *current){
     char points_buf[1024]="";
-    for(int i=0; i < current->fig.polygone->nb_points; i++){
-        char p_str[32];
-        sprintf(p_str, "%d,%d ", current->fig.polygone->points[i].x, current->fig.polygone->points[i].y);
-        strcat(points_buf, p_str);
-    }
+    print_points_list(current->fig.polygone->point_head, points_buf, sizeof(points_buf));
     fprintf(file, "  <polygon points=\"%s\" stroke=\"#%s\" fill=\"#%s\" transform=\"translate(%d,%d) rotate(%d)\"/>\n",
         points_buf, current->fig.polygone->color_border, current->fig.polygone->color,
         current->fig.polygone->translate_x, current->fig.polygone->translate_y,
@@ -114,7 +122,7 @@ void save_scene_to_html(void) {
     fprintf(file, "</svg>\n");
     fclose(file);
 /*
-//chercher comment le faire marcer plus tard (car pour le moment sa marche pas)
+//chercher comment le faire marcher plus tard (car pour le moment sa marche pas)
     // Commande système pour ouvrir le fichier HTML selon l'OS / environnement
     char command[512];
     #if defined(_WIN32) || defined(_WIN64)

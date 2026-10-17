@@ -231,10 +231,19 @@ int add_new_line(void){
 int add_new_multi_line(void){
     multi_line_s *ml=malloc(sizeof(multi_line_s));
     ml->nb_points=add_nb_points(3);
-    ml->points=malloc(ml->nb_points*sizeof(point));
+    ml->point_head=NULL;
+    point_node_t *last_pt_node=NULL;
     for(int i=0; i < ml->nb_points; i++){
+        point_node_t *new_pt_node=malloc(sizeof(point_node_t));
         printf("Saisie du point %d :\n", i+1);
-        add_new_point(&ml->points[i]);
+        add_new_point(&new_pt_node->pt);
+        new_pt_node->next=NULL;
+        if(ml->point_head==NULL){
+            ml->point_head=new_pt_node;
+        } else {
+            last_pt_node->next=new_pt_node;
+        }
+        last_pt_node=new_pt_node;
     }
     ml->color=add_color();
     ml->translate_x=0;
@@ -254,10 +263,19 @@ int add_new_multi_line(void){
 int add_new_polygone(void){
     polygone_s *p=malloc(sizeof(polygone_s));
     p->nb_points=add_nb_points(3);
-    p->points=malloc(p->nb_points*sizeof(point));
+    p->point_head=NULL;
+    point_node_t *last_pt_node=NULL;
     for(int i=0; i < p->nb_points; i++){
+        point_node_t *new_pt_node=malloc(sizeof(point_node_t));
         printf("Saisie du point %d :\n", i+1);
-        add_new_point(&p->points[i]);
+        add_new_point(&new_pt_node->pt);
+        new_pt_node->next=NULL;
+        if(p->point_head==NULL){
+            p->point_head=new_pt_node;
+        } else {
+            last_pt_node->next=new_pt_node;
+        }
+        last_pt_node=new_pt_node;
     }
     printf("Couleur de la bordure :\n");
     p->color_border=add_color();

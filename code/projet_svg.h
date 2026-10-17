@@ -27,6 +27,11 @@
         int y;
     }point;
 
+    typedef struct point_node_t {
+        point pt;
+        struct point_node_t *next;
+    } point_node_t;
+
     //ligne
     typedef struct line_t{
         char *color;
@@ -86,17 +91,18 @@
     //multi-ligne
     typedef struct multi_line_t{
         char *color;
-        point *points;
+        point_node_t *point_head;
         int nb_points;
         int translate_x;
         int translate_y;
         int rotate;
     }multi_line_s;
 
+    //polygone
     typedef struct polygone_t{
         char *color;
         char *color_border;
-        point *points;
+        point_node_t *point_head;
         int nb_points;
         int translate_x;
         int translate_y;

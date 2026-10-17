@@ -37,13 +37,23 @@ void free_rectangle(node_t *current){
 }
 // Liberation de la memoire d'un multi ligne
 void free_multi_line(node_t *current){
+    point_node_t *pt_curr = current->fig.multi_line->point_head;
+    while (pt_curr != NULL) {
+        point_node_t *next_pt = pt_curr->next;
+        free(pt_curr);
+        pt_curr = next_pt;
+    }
     free(current->fig.multi_line->color);
-    free(current->fig.multi_line->points);
     free(current->fig.multi_line);
 }
 // Liberation de la memoire d'un polygone
 void free_polygone(node_t *current){
-    free(current->fig.polygone->points);
+    point_node_t *pt_curr = current->fig.polygone->point_head;
+    while (pt_curr != NULL) {
+        point_node_t *next_pt = pt_curr->next;
+        free(pt_curr);
+        pt_curr = next_pt;
+    }
     free(current->fig.polygone->color_border);
     free(current->fig.polygone->color);
     free(current->fig.polygone);
