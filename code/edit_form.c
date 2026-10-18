@@ -1,5 +1,20 @@
 #include "projet_svg.h"
 
+void edit_point(point *p, char *m){
+    printf("%s", m);
+    add_new_point(p);
+}
+void edit_color(char *color, char*m){
+    free(color);
+    printf("%s", m);
+    color = add_color();
+}
+int edit_int(char *m){
+    printf("%s", m);
+    int i = add_int();
+    return i;
+}
+
 int edit_line(node_t *current, int index){
     char choice;
     printf("\nModification de la Ligne [%d]\n", index);
@@ -12,32 +27,19 @@ int edit_line(node_t *current, int index){
         clear_stdin();
         switch (choice){
         case '1':
-            printf("Nouveau point A :\n");
-            add_new_point(current->fig.line->a);
+            edit_point(current->fig.line->a, "Nouveau point A :\n");
             return 0;
-            break;
         case '2':
-            printf("Nouveau point B :\n");
-            add_new_point(current->fig.line->b);
+            edit_point(current->fig.line->b, "Nouveau point B :\n");
             return 0;
-            break;
         case '3':
-            free(current->fig.line->color);
-            printf("Nouvelle couleur :\n");
-            current->fig.line->color = add_color();
+            edit_color(current->fig.line->color, "Nouvelle couleur :\n");
             return 0;
-            break;
         case '4':
-            printf("Nouveau point A :\n");
-            add_new_point(current->fig.line->a);
-            printf("Nouveau point B :\n");
-            add_new_point(current->fig.line->b);
-            
-            free(current->fig.line->color);
-            printf("Nouvelle couleur :\n");
-            current->fig.line->color = add_color();
+            edit_point(current->fig.line->a, "Nouveau point A :\n");
+            edit_point(current->fig.line->b, "Nouveau point B :\n");
+            edit_color(current->fig.line->color, "Nouvelle couleur :\n");
             return 0;
-            break;
         default:
             printf("Choix invalide\n");
             break;
@@ -58,43 +60,23 @@ int edit_circle(node_t *current, int index){
         clear_stdin();
         switch (choice){
         case '1':
-            printf("Nouveau centre :\n");
-            add_new_point(current->fig.circle->center);
+            edit_point(current->fig.circle->center, "Nouveau centre :\n");
             return 0;
-            break;
         case '2':
-            printf("Nouveau rayon :\n");
-            current->fig.circle->radius = add_int();
+            current->fig.circle->radius=edit_int("Nouveau rayon :\n");
             return 0;
-            break;
         case '3':
-            free(current->fig.circle->color_border);
-            printf("Nouvelle couleur de bordure :\n");
-            current->fig.circle->color_border = add_color();
+            edit_color(current->fig.circle->color_border, "Nouvelle couleur de bordure :\n");
             return 0;
-            break;
         case '4':
-            free(current->fig.circle->color);
-            printf("Nouvelle couleur de remplissage :\n");
-            current->fig.circle->color = add_color();
+            edit_color(current->fig.circle->color, "Nouvelle couleur de remplissage :\n");
             return 0;
-            break;
         case '5':
-            printf("Nouveau centre :\n");
-            add_new_point(current->fig.circle->center);
-            
-            printf("Nouveau rayon :\n");
-            current->fig.circle->radius = add_int();
-            
-            free(current->fig.circle->color_border);
-            printf("Nouvelle couleur de bordure :\n");
-            current->fig.circle->color_border = add_color();
-            
-            free(current->fig.circle->color);
-            printf("Nouvelle couleur de remplissage :\n");
-            current->fig.circle->color = add_color();
+            edit_point(current->fig.circle->center, "Nouveau centre :\n");
+            current->fig.circle->radius=edit_int("Nouveau rayon :\n");
+            edit_color(current->fig.circle->color_border, "Nouvelle couleur de bordure :\n");
+            edit_color(current->fig.circle->color, "Nouvelle couleur de remplissage :\n");
             return 0;
-            break;
         default:
             printf("Choix invalide\n");
             break;
@@ -116,50 +98,27 @@ int edit_ellipse(node_t *current, int index){
         clear_stdin();
         switch (choice){
         case '1':
-            printf("Nouveau centre :\n");
-            add_new_point(current->fig.ellipse->center);
+            edit_point(current->fig.ellipse->center, "Nouveau centre :\n");
             return 0;
-            break;
         case '2':
-            printf("Nouveau rayon x :\n");
-            current->fig.ellipse->radius_x = add_int();
+            current->fig.ellipse->radius_x = edit_int("Nouveau rayon x :\n");
             return 0;
-            break;
         case '3':
-            printf("Nouveau rayon y :\n");
-            current->fig.ellipse->radius_y = add_int();
+            current->fig.ellipse->radius_y = edit_int("Nouveau rayon y :\n");
             return 0;
-            break;
         case '4':
-            free(current->fig.ellipse->color_border);
-            printf("Nouvelle couleur de bordure :\n");
-            current->fig.ellipse->color_border = add_color();
+            edit_color(current->fig.ellipse->color_border, "Nouvelle couleur de bordure :\n");
             return 0;
-            break;
         case '5':
-            free(current->fig.ellipse->color);
-            printf("Nouvelle couleur de remplissage :\n");
-            current->fig.ellipse->color = add_color();
+            edit_color(current->fig.ellipse->color, "Nouvelle couleur de remplissage :\n");
             return 0;
-            break;
         case '6':
-            printf("Nouveau centre :\n");
-            add_new_point(current->fig.ellipse->center);
-            
-            printf("Nouveau rayon x :\n");
-            current->fig.ellipse->radius_x = add_int();
-            printf("Nouveau rayon y :\n");
-            current->fig.ellipse->radius_y = add_int();
-            
-            free(current->fig.ellipse->color_border);
-            printf("Nouvelle couleur de bordure :\n");
-            current->fig.ellipse->color_border = add_color();
-            
-            free(current->fig.ellipse->color);
-            printf("Nouvelle couleur de remplissage :\n");
-            current->fig.ellipse->color = add_color();
+            edit_point(current->fig.ellipse->center, "Nouveau centre :\n");
+            current->fig.ellipse->radius_x = edit_int("Nouveau rayon x :\n");
+            current->fig.ellipse->radius_y = edit_int("Nouveau rayon y :\n");
+            edit_color(current->fig.ellipse->color_border, "Nouvelle couleur de bordure :\n");
+            edit_color(current->fig.ellipse->color, "Nouvelle couleur de remplissage :\n");
             return 0;
-            break;
         default:
             printf("Choix invalide\n");
             break;
@@ -180,43 +139,23 @@ int edit_square(node_t *current, int index){
         clear_stdin();
         switch (choice){
         case '1':
-            printf("Nouvelle origine :\n");
-            add_new_point(current->fig.square->origin);
+            edit_point(current->fig.square->origin, "Nouvelle origine :\n");
             return 0;
-            break;
         case '2':
-            printf("Nouvelle largeur :\n");
-            current->fig.square->widht = add_int();
+            current->fig.square->widht = edit_int("Nouvelle largeur :\n");
             return 0;
-            break;
         case '3':
-            free(current->fig.square->color_border);
-            printf("Nouvelle couleur de bordure :\n");
-            current->fig.square->color_border = add_color();
+            edit_color(current->fig.square->color_border, "Nouvelle couleur de bordure :\n");
             return 0;
-            break;
         case '4':
-            free(current->fig.square->color);
-            printf("Nouvelle couleur de remplissage :\n");
-            current->fig.square->color = add_color();
+            edit_color(current->fig.square->color, "Nouvelle couleur de remplissage :\n");
             return 0;
-            break;
         case '5':
-            printf("Nouvelle origine :\n");
-            add_new_point(current->fig.square->origin);
-            
-            printf("Nouvelle largeur :\n");
-            current->fig.square->widht = add_int();
-            
-            free(current->fig.square->color_border);
-            printf("Nouvelle couleur de bordure :\n");
-            current->fig.square->color_border = add_color();
-            
-            free(current->fig.square->color);
-            printf("Nouvelle couleur de remplissage :\n");
-            current->fig.square->color = add_color();
+            edit_point(current->fig.square->origin, "Nouvelle origine :\n");
+            current->fig.square->widht = edit_int("Nouvelle largeur :\n");
+            edit_color(current->fig.square->color_border, "Nouvelle couleur de bordure :\n");
+            edit_color(current->fig.square->color, "Nouvelle couleur de remplissage :\n");
             return 0;
-            break;
         default:
             printf("Choix invalide\n");
             break;
@@ -238,55 +177,121 @@ int edit_rectangle(node_t *current, int index){
         clear_stdin();
         switch (choice){
         case '1':
-            printf("Nouvelle origine :\n");
-            add_new_point(current->fig.rectangle->origin);
+            edit_point(current->fig.rectangle->origin, "Nouvelle origine :\n");
             return 0;
-            break;
         case '2':
-            printf("Nouvelle largeur :\n");
-            current->fig.rectangle->widht = add_int();
+            current->fig.rectangle->widht = edit_int("Nouvelle largeur :\n");
             return 0;
-            break;
         case '3':
-            printf("Nouvelle longueur :\n");
-            current->fig.rectangle->height = add_int();
+            current->fig.rectangle->height = edit_int("Nouvelle longueur :\n");
             return 0;
-            break;
         case '4':
-            free(current->fig.rectangle->color_border);
-            printf("Nouvelle couleur de bordure :\n");
-            current->fig.rectangle->color_border = add_color();
+            edit_color(current->fig.rectangle->color_border, "Nouvelle couleur de bordure :\n");
             return 0;
-            break;
         case '5':
-            free(current->fig.rectangle->color);
-            printf("Nouvelle couleur de remplissage :\n");
-            current->fig.rectangle->color = add_color();
+            edit_color(current->fig.rectangle->color, "Nouvelle couleur de remplissage :\n");
             return 0;
-            break;
         case '6':
-            printf("Nouveau centre :\n");
-            add_new_point(current->fig.rectangle->origin);
-            
-            printf("Nouvelle largeur :\n");
-            current->fig.rectangle->widht = add_int();
-            printf("Nouvelle lougueur :\n");
-            current->fig.rectangle->height = add_int();
-            
-            free(current->fig.rectangle->color_border);
-            printf("Nouvelle couleur de bordure :\n");
-            current->fig.rectangle->color_border = add_color();
-            
-            free(current->fig.rectangle->color);
-            printf("Nouvelle couleur de remplissage :\n");
-            current->fig.rectangle->color = add_color();
+            edit_point(current->fig.rectangle->origin, "Nouvelle origine :\n");
+            current->fig.rectangle->widht = edit_int("Nouvelle largeur :\n");
+            current->fig.rectangle->height = edit_int("Nouvelle longueur :\n");
+            edit_color(current->fig.rectangle->color_border, "Nouvelle couleur de bordure :\n");
+            edit_color(current->fig.rectangle->color, "Nouvelle couleur de remplissage :\n");
             return 0;
-            break;
         default:
             printf("Choix invalide\n");
             break;
         }
     }
+}
+
+// Modifier un point existant à un index donné
+void edit_point_in_list(point_node_t **head_ref, int num_points) {
+    int target_idx;
+    printf("Entrez l'index du point à modifier (0 à %d) : ", num_points - 1);
+    if (scanf("%d", &target_idx) != 1 || target_idx < 0 || target_idx >= num_points) {
+        clear_stdin();
+        printf("Index invalide.\n");
+        return;
+    }
+    clear_stdin();
+
+    point_node_t *curr = *head_ref;
+    for (int i = 0; i < target_idx; i++) {
+        curr = curr->next;
+    }
+    printf("Nouvelles coordonnées pour le point %d :\n", target_idx);
+    add_new_point(&(curr->pt));
+    printf("Point modifié avec succès !\n");
+}
+
+// Ajouter un nouveau point à un index donné
+void edit_add_point(point_node_t **head_ref, int *num_points_ref) {
+    int target_idx;
+    printf("Entrez l'index où insérer le nouveau point (0 à %d) : ", *num_points_ref);
+    if (scanf("%d", &target_idx) != 1 || target_idx < 0 || target_idx > *num_points_ref) {
+        clear_stdin();
+        printf("Index invalide.\n");
+        return;
+    }
+    clear_stdin();
+
+    point_node_t *new_node = malloc(sizeof(point_node_t));
+    if (new_node == NULL) {
+        printf("Erreur d'allocation mémoire.\n");
+        return;
+    }
+    
+    printf("Coordonnées du nouveau point :\n");
+    add_new_point(&(new_node->pt));
+    new_node->next = NULL;
+
+    if (target_idx == 0) {
+        new_node->next = *head_ref;
+        *head_ref = new_node;
+    } else {
+        point_node_t *curr = *head_ref;
+        for (int i = 0; i < target_idx - 1; i++) {
+            curr = curr->next;
+        }
+        new_node->next = curr->next;
+        curr->next = new_node;
+    }
+    (*num_points_ref)++;
+    printf("Point ajouté avec succès !\n");
+}
+
+// Supprimer un point à un index donné
+void edit_del_point(point_node_t **head_ref, int *num_points_ref, int min_points) {
+    if (*num_points_ref <= min_points) {
+        printf("Erreur : Impossible de supprimer ce point. Minimum requis : %d points.\n", min_points);
+        return;
+    }
+    
+    int target_idx;
+    printf("Entrez l'index du point à supprimer (0 à %d) : ", *num_points_ref - 1);
+    if (scanf("%d", &target_idx) != 1 || target_idx < 0 || target_idx >= *num_points_ref) {
+        clear_stdin();
+        printf("Index invalide.\n");
+        return;
+    }
+    clear_stdin();
+
+    point_node_t *to_free = NULL;
+    if (target_idx == 0) {
+        to_free = *head_ref;
+        *head_ref = (*head_ref)->next;
+    } else {
+        point_node_t *curr = *head_ref;
+        for (int i = 0; i < target_idx - 1; i++) {
+            curr = curr->next;
+        }
+        to_free = curr->next;
+        curr->next = to_free->next;
+    }
+    free(to_free);
+    (*num_points_ref)--;
+    printf("Point supprimé avec succès !\n");
 }
 
 // Fonction générique pour éditer, ajouter ou supprimer des points dans une liste chaînée de points
@@ -311,95 +316,27 @@ int edit_points_list(point_node_t **head_ref, int *num_points_ref, int min_point
         scanf(" %c", &choice);
         clear_stdin();
 
-        if (choice == '4') {
-            break;
-        }
-
-        int target_idx;
         switch (choice) {
-            case '1': // Modifier un point
-                printf("Entrez l'index du point à modifier (0 à %d) : ", *num_points_ref - 1);
-                if (scanf("%d", &target_idx) != 1 || target_idx < 0 || target_idx >= *num_points_ref) {
-                    clear_stdin();
-                    printf("Index invalide.\n");
-                    break;
-                }
-                clear_stdin();
-
-                curr = *head_ref;
-                for (int i = 0; i < target_idx; i++) {
-                    curr = curr->next;
-                }
-                printf("Nouvelles coordonnées pour le point %d :\n", target_idx);
-                add_new_point(&(curr->pt));
-                printf("Point modifié avec succès !\n");
+            case '1':
+                edit_point_in_list(head_ref, *num_points_ref);
                 break;
 
-            case '2': // Ajouter un point n'importe où
-                printf("Entrez l'index où insérer le nouveau point (0 à %d) : ", *num_points_ref);
-                if (scanf("%d", &target_idx) != 1 || target_idx < 0 || target_idx > *num_points_ref) {
-                    clear_stdin();
-                    printf("Index invalide.\n");
-                    break;
-                }
-                clear_stdin();
-
-                point_node_t *new_node = malloc(sizeof(point_node_t));
-                printf("Coordonnées du nouveau point :\n");
-                add_new_point(&(new_node->pt));
-                new_node->next = NULL;
-
-                if (target_idx == 0) {
-                    new_node->next = *head_ref;
-                    *head_ref = new_node;
-                } else {
-                    curr = *head_ref;
-                    for (int i = 0; i < target_idx - 1; i++) {
-                        curr = curr->next;
-                    }
-                    new_node->next = curr->next;
-                    curr->next = new_node;
-                }
-                (*num_points_ref)++;
-                printf("Point ajouté avec succès !\n");
+            case '2':
+                edit_add_point(head_ref, num_points_ref);
                 break;
 
-            case '3': // Supprimer un point
-                if (*num_points_ref <= min_points) {
-                    printf("Erreur : Impossible de supprimer ce point. Minimum requis : %d points.\n", min_points);
-                    break;
-                }
-                printf("Entrez l'index du point à supprimer (0 à %d) : ", *num_points_ref - 1);
-                if (scanf("%d", &target_idx) != 1 || target_idx < 0 || target_idx >= *num_points_ref) {
-                    clear_stdin();
-                    printf("Index invalide.\n");
-                    break;
-                }
-                clear_stdin();
-
-                point_node_t *to_free = NULL;
-                if (target_idx == 0) {
-                    to_free = *head_ref;
-                    *head_ref = (*head_ref)->next;
-                } else {
-                    curr = *head_ref;
-                    for (int i = 0; i < target_idx - 1; i++) {
-                        curr = curr->next;
-                    }
-                    to_free = curr->next;
-                    curr->next = to_free->next;
-                }
-                free(to_free);
-                (*num_points_ref)--;
-                printf("Point supprimé avec succès !\n");
+            case '3':
+                edit_del_point(head_ref, num_points_ref, min_points);
                 break;
+
+            case '4':
+                return 0;
 
             default:
                 printf("Choix invalide.\n");
                 break;
         }
     }
-    return 0;
 }
 
 int edit_multi_line(node_t *current, int index){
@@ -416,15 +353,11 @@ int edit_multi_line(node_t *current, int index){
             edit_points_list(&(current->fig.multi_line->point_head), &(current->fig.multi_line->nb_points), 3);
             return 0;
         case '2':
-            free(current->fig.multi_line->color);
-            printf("Nouvelle couleur :\n");
-            current->fig.multi_line->color = add_color();
+            edit_color(current->fig.multi_line->color, "Nouvelle couleur :\n");
             return 0;
         case '3':
             edit_points_list(&(current->fig.multi_line->point_head), &(current->fig.multi_line->nb_points), 3);
-            free(current->fig.multi_line->color);
-            printf("Nouvelle couleur :\n");
-            current->fig.multi_line->color = add_color();
+            edit_color(current->fig.multi_line->color, "Nouvelle couleur :\n");
             return 0;
         default:
             printf("Choix invalide\n");
@@ -448,23 +381,15 @@ int edit_polygone(node_t *current, int index){
             edit_points_list(&(current->fig.polygone->point_head), &(current->fig.polygone->nb_points), 3);
             return 0;
         case '2':
-            free(current->fig.polygone->color_border);
-            printf("Nouvelle couleur de bordure :\n");
-            current->fig.polygone->color_border = add_color();
+            edit_color(current->fig.polygone->color_border, "Nouvelle couleur de bordure :\n");
             return 0;
         case '3':
-            free(current->fig.polygone->color);
-            printf("Nouvelle couleur de remplissage :\n");
-            current->fig.polygone->color = add_color();
+            edit_color(current->fig.polygone->color, "Nouvelle couleur de remplissage :\n");
             return 0;
         case '4':
             edit_points_list(&(current->fig.polygone->point_head), &(current->fig.polygone->nb_points), 3);
-            free(current->fig.polygone->color_border);
-            printf("Nouvelle couleur de bordure :\n");
-            current->fig.polygone->color_border = add_color();
-            free(current->fig.polygone->color);
-            printf("Nouvelle couleur de remplissage :\n");
-            current->fig.polygone->color = add_color();
+            edit_color(current->fig.polygone->color_border, "Nouvelle couleur de bordure :\n");
+            edit_color(current->fig.polygone->color, "Nouvelle couleur de remplissage :\n");
             return 0;
         default:
             printf("Choix invalide\n");
