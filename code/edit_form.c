@@ -398,6 +398,272 @@ int edit_polygone(node_t *current, int index){
     }
 }
 
+//----------------------------------Fonction de modification de path-----------------------------------------------------------
+
+// Saisie/mise à jour d'une commande de path selon son type
+void prompt_path_command_data(path_command_node_t *cmd) {
+    char cmd_choice;
+    printf("Type de commande :\n");
+    printf("=> 1 - MoveTo (M)\n");
+    printf("=> 2 - LineTo (L)\n");
+    printf("=> 3 - CurveTo (C - Cubique)\n");
+    printf("=> 4 - Smooth Curve (S - Cubique lisse)\n");
+    printf("=> 5 - Quad (Q - Quadratique)\n");
+    printf("=> 6 - Smooth Quad (T - Quadratique lisse)\n");
+    printf("=> 7 - Close (Z)\n");
+    scanf(" %c", &cmd_choice);
+    clear_stdin();
+
+    switch (cmd_choice) {
+        case '1':
+            cmd->type = MOVETO;
+            printf("Point d'arrivée :\n");
+            add_new_point(&cmd->p);
+            break;
+        case '2':
+            cmd->type = LINETO;
+            printf("Point d'arrivée :\n");
+            add_new_point(&cmd->p);
+            break;
+        case '3':
+            cmd->type = CURVETO;
+            printf("Premier point de contrôle (ctrl1) :\n");
+            add_new_point(&cmd->ctrl1);
+            printf("Second point de contrôle (ctrl2) :\n");
+            add_new_point(&cmd->ctrl2);
+            printf("Point d'arrivée :\n");
+            add_new_point(&cmd->p);
+            break;
+        case '4':
+            cmd->type = SMOOTH_CURVE;
+            printf("Second point de contrôle (ctrl2) :\n");
+            add_new_point(&cmd->ctrl2);
+            printf("Point d'arrivée :\n");
+            add_new_point(&cmd->p);
+            break;
+        case '5':
+            cmd->type = QUAD;
+            printf("Point de contrôle (ctrl1) :\n");
+            add_new_point(&cmd->ctrl1);
+            printf("Point d'arrivée :\n");
+            add_new_point(&cmd->p);
+            break;
+        case '6':
+            cmd->type = SMOOTH_QUAD;
+            printf("Point d'arrivée :\n");
+            add_new_point(&cmd->p);
+            break;
+        case '7':
+            cmd->type = CLOSE;
+            cmd->p.x = 0;
+            cmd->p.y = 0;
+            break;
+        default:
+            printf("Choix invalide. Par défaut défini sur LineTo (L).\n");
+            cmd->type = LINETO;
+            printf("Point d'arrivée :\n");
+            add_new_point(&cmd->p);
+            break;
+    }
+}
+
+// Modifier une commande existante
+void edit_command_in_path(path_command_node_t **head_ref, int nb_commands) {
+    int target_idx;
+    printf("Entrez l'index de la commande à modifier (0 à %d) : ", nb_commands - 1);
+    if (scanf("%d", &target_idx) != 1 || target_idx < 0 || target_idx >= nb_commands) {
+        clear_stdin();
+        printf("Index invalide.\n");
+        return;
+    }
+    clear_stdin();
+
+    path_command_node_t *curr = *head_ref;
+    for (int i = 0; i < target_idx; i++) {
+        curr = curr->next;
+    }
+    printf("\nModification de la commande [%d] :\n", target_idx);
+    prompt_path_command_data(curr);
+    printf("Commande modifiée avec succès !\n");
+}
+
+// Ajouter une nouvelle commande à la liste du Path
+void edit_add_command_to_path(path_command_node_t **head_ref, int *nb_commands_ref) {
+    int target_idx;
+    printf("Entrez l'index où insérer la nouvelle commande (0 à %d) : ", *nb_commands_ref);
+    if (scanf("%d", &target_idx) != 1 || target_idx < 0 || target_idx > *nb_commands_ref) {
+        clear_stdin();
+        printf("Index invalide.\n");
+        return;
+    }
+    clear_stdin();
+
+    path_command_node_t *new_node = malloc(sizeof(path_command_node_t));
+    if (new_node == NULL) return;
+    new_node->next = NULL;
+
+    printf("\nSaisie de la nouvelle commande :\n");
+    prompt_path_command_data(new_node);
+
+    if (target_idx == 0) {
+        new_node->next = *head_ref;
+        *head_ref = new_node;
+    } else {
+        path_command_node_t *curr = *head_ref;
+        for (int i = 0; i < target_idx - 1; i++) {
+            curr = curr->next;
+        }
+        new_node->next = curr->next;
+        curr->next = new_node;
+    }
+    (*nb_commands_ref)++;
+    printf("Commande ajoutée avec succès !\n");
+}
+
+// Supprimer une commande du Path
+void edit_del_command_from_path(path_command_node_t **head_ref, int *nb_commands_ref) {
+    if (*nb_commands_ref <= 1) {
+        printf("Erreur : Un Path doit contenir au moins 1 commande.\n");
+        return;
+    }
+
+    int target_idx;
+    printf("Entrez l'index de la commande à supprimer (0 à %d) : ", *nb_commands_ref - 1);
+    if (scanf("%d", &target_idx) != 1 || target_idx < 0 || target_idx >= *nb_commands_ref) {
+        clear_stdin();
+        printf("Index invalide.\n");
+        return;
+    }
+    clear_stdin();
+
+    path_command_node_t *to_free = NULL;
+    if (target_idx == 0) {
+        to_free = *head_ref;
+        *head_ref = (*head_ref)->next;
+    } else {
+        path_command_node_t *curr = *head_ref;
+        for (int i = 0; i < target_idx - 1; i++) {
+            curr = curr->next;
+        }
+        to_free = curr->next;
+        curr->next = to_free->next;
+    }
+    free(to_free);
+    (*nb_commands_ref)--;
+    printf("Commande supprimée avec succès !\n");
+}
+
+// Menu d'édition de la liste chaînée des commandes de Path
+int edit_path_commands_list(path_command_node_t **head_ref, int *nb_commands_ref) {
+    char choice;
+    while (1) {
+        printf("\n--- Liste des commandes actuelles (%d commandes) ---\n", *nb_commands_ref);
+        path_command_node_t *curr = *head_ref;
+        int idx = 0;
+        while (curr != NULL) {
+            switch (curr->type) {
+                case MOVETO:
+                    printf("[%d] MoveTo (M) -> Pt: (%d, %d)\n", idx, curr->p.x, curr->p.y);
+                    break;
+                case LINETO:
+                    printf("[%d] LineTo (L) -> Pt: (%d, %d)\n", idx, curr->p.x, curr->p.y);
+                    break;
+                case CURVETO:
+                    printf("[%d] CurveTo (C) -> Ctrl1: (%d, %d), Ctrl2: (%d, %d), Pt: (%d, %d)\n", 
+                           idx, curr->ctrl1.x, curr->ctrl1.y, curr->ctrl2.x, curr->ctrl2.y, curr->p.x, curr->p.y);
+                    break;
+                case SMOOTH_CURVE:
+                    printf("[%d] Smooth Curve (S) -> Ctrl2: (%d, %d), Pt: (%d, %d)\n", 
+                           idx, curr->ctrl2.x, curr->ctrl2.y, curr->p.x, curr->p.y);
+                    break;
+                case QUAD:
+                    printf("[%d] Quad (Q) -> Ctrl1: (%d, %d), Pt: (%d, %d)\n", 
+                           idx, curr->ctrl1.x, curr->ctrl1.y, curr->p.x, curr->p.y);
+                    break;
+                case SMOOTH_QUAD:
+                    printf("[%d] Smooth Quad (T) -> Pt: (%d, %d)\n", idx, curr->p.x, curr->p.y);
+                    break;
+                case CLOSE:
+                    printf("[%d] Close (Z)\n", idx);
+                    break;
+            }
+            curr = curr->next;
+            idx++;
+        }
+
+        printf("\nOptions pour les commandes du Path :\n");
+        printf("=> 1 : Modifier une commande\n");
+        printf("=> 2 : Ajouter une commande\n");
+        printf("=> 3 : Supprimer une commande\n");
+        printf("=> 4 : Terminer\n");
+
+        scanf(" %c", &choice);
+        clear_stdin();
+
+        switch (choice) {
+            case '1': edit_command_in_path(head_ref, *nb_commands_ref); break;
+            case '2': edit_add_command_to_path(head_ref, nb_commands_ref); break;
+            case '3': edit_del_command_from_path(head_ref, nb_commands_ref); break;
+            case '4': return 0;
+            default: printf("Choix invalide.\n"); break;
+        }
+    }
+}
+//--------------------------------------------------------------------------------------------------------------------------------
+
+// Modification d'un Path
+int edit_path(node_t *current, int index){
+    char choice;
+    printf("\nModification du Path [%d]\n", index);
+    printf("=> 1 : Modifier la liste des commandes / points de contrôle\n");
+    printf("=> 2 : Couleur de la bordure\n");
+    printf("=> 3 : Couleur du fond\n");
+    printf("=> 4 : Tout\n");
+    while(1){
+        scanf(" %c",&choice);
+        clear_stdin();
+        switch (choice){
+        case '1':
+            edit_path_commands_list(&(current->fig.path->commands_head), &(current->fig.path->nb_commands));
+            return 0;
+        case '2':
+            edit_color(current->fig.path->color_border, "Nouvelle couleur de bordure :\n");
+            return 0;
+        case '3':
+            edit_color(current->fig.path->color, "Nouvelle couleur de fond :\n");
+            return 0;
+        case '4':
+            edit_path_commands_list(&(current->fig.path->commands_head), &(current->fig.path->nb_commands));
+            edit_color(current->fig.path->color_border, "Nouvelle couleur de bordure :\n");
+            edit_color(current->fig.path->color, "Nouvelle couleur de fond :\n");
+            return 0;
+        default:
+            printf("Choix invalide\n");
+            break;
+        }
+    }
+}
+
+// Modification d'un Groupe (Permet d'éditer la scène interne du groupe)
+int edit_group(node_t *current, int index){
+    printf("\nModification des elements du Groupe [%d]\n", index);
+    
+    // Sauvegarde de la scène principale et basculement sur la scène du groupe
+    Scene old_scene = ma_scene;
+    ma_scene.head = current->fig.group->children_head;
+    ma_scene.count = current->fig.group->nb_children;
+
+    // Appel de la fonction edit_form sur les enfants du groupe
+    edit_form();
+
+    // Restauration de la scène principale
+    current->fig.group->children_head = ma_scene.head;
+    current->fig.group->nb_children = ma_scene.count;
+    ma_scene = old_scene;
+
+    return 0;
+}
+
 int edit(node_t *current, int index){
     switch (current->type)
     {
@@ -421,6 +687,12 @@ int edit(node_t *current, int index){
         break;
     case POLYGONE:
         edit_polygone(current, index);
+        break;
+    case PATH:
+        edit_path(current, index);
+        break;
+    case GROUP:
+        edit_group(current, index);
         break;
     default:
         printf("une erreur est survenu\n");
@@ -475,6 +747,14 @@ int translate(node_t *current){
         current->fig.polygone->translate_x=tx;
         current->fig.polygone->translate_y=ty;
         break;
+    case PATH:
+        current->fig.path->translate_x=tx;
+        current->fig.path->translate_y=ty;
+        break;
+    case GROUP:
+        current->fig.group->translate_x=tx;
+        current->fig.group->translate_y=ty;
+        break;
     default:
         printf("Une erreur est survenu\n");
         return -1;
@@ -514,6 +794,12 @@ int rotate(node_t *current){
         break;
     case POLYGONE:
         current->fig.polygone->rotate=angle;
+        break;
+    case PATH:
+        current->fig.path->rotate=angle;
+        break;
+    case GROUP:
+        current->fig.group->rotate=angle;
         break;
     default:
         printf("Une erreur est survenu\n");
@@ -580,18 +866,33 @@ void print_rectangle(node_t *current, int i){
         current->fig.rectangle->translate_x, current->fig.rectangle->translate_y,
         current->fig.rectangle->rotate);
 }
+//affiche multi-ligne
 void print_multi_line(node_t *current, int i){
     printf("[%d] Multi ligne (%d points | Trans: %d,%d | Rot: %d°)\n",
         i, current->fig.multi_line->nb_points,
         current->fig.multi_line->translate_x, current->fig.multi_line->translate_y,
         current->fig.multi_line->rotate);
 }
-
+//affiche polygone
 void print_polygone(node_t *current, int i){
     printf("[%d] Polygone (%d points | Trans: %d,%d | Rot: %d°)\n",
         i, current->fig.polygone->nb_points,
         current->fig.polygone->translate_x, current->fig.polygone->translate_y,
         current->fig.polygone->rotate);
+}
+//affiche chemin
+void print_path(node_t *current, int i){
+    printf("[%d] Path (%d commandes | Trans: %d,%d | Rot: %d°)\n",
+        i, current->fig.path->nb_commands,
+        current->fig.path->translate_x, current->fig.path->translate_y,
+        current->fig.path->rotate);
+}
+//affiche groupe
+void print_group(node_t *current, int i){
+    printf("[%d] Groupe (%d elements | Trans: %d,%d | Rot: %d°)\n",
+        i, current->fig.group->nb_children,
+        current->fig.group->translate_x, current->fig.group->translate_y,
+        current->fig.group->rotate);
 }
 
 //fonction principal
@@ -629,6 +930,12 @@ int edit_form(void) {
         case POLYGONE:
             print_polygone(current, i);
             break; 
+        case PATH:
+            print_path(current, i);
+            break;
+        case GROUP:
+            print_group(current, i);
+            break;
         default:
             printf("Une erreur est survenu\n");
             return -1;
