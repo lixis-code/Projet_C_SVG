@@ -16,6 +16,44 @@ void print_points_list(point_node_t *pt_curr, char *buffer, size_t max_size){
     }
 }
 
+// Fonction pour traduire la liste des commandes du Path en chaîne SVG
+void print_path_commands_list(path_command_node_t *cmd_curr, char *buffer, size_t max_size){
+    buffer[0] = '\0';
+    while (cmd_curr != NULL) {
+        char cmd_str[64];
+        switch (cmd_curr->type) {
+            case MOVETO:
+                sprintf(cmd_str, "M %d %d ", cmd_curr->p.x, cmd_curr->p.y);
+                break;
+            case LINETO:
+                sprintf(cmd_str, "L %d %d ", cmd_curr->p.x, cmd_curr->p.y);
+                break;
+            case CURVETO:
+                sprintf(cmd_str, "C %d %d, %d %d, %d %d ", 
+                        cmd_curr->ctrl1.x, cmd_curr->ctrl1.y,
+                        cmd_curr->ctrl2.x, cmd_curr->ctrl2.y,
+                        cmd_curr->p.x, cmd_curr->p.y);
+                break;
+            case SMOOTH_CURVE:
+                sprintf(cmd_str, "S %d %d, %d %d ", cmd_curr->ctrl2.x, cmd_curr->ctrl2.y, cmd_curr->p.x, cmd_curr->p.y);
+                break;
+            case QUAD:
+                sprintf(cmd_str, "Q %d %d, %d %d ", cmd_curr->ctrl1.x, cmd_curr->ctrl1.y, cmd_curr->p.x, cmd_curr->p.y);
+                break;
+            case SMOOTH_QUAD:
+                sprintf(cmd_str, "T %d %d ", cmd_curr->p.x, cmd_curr->p.y);
+                break;
+            case CLOSE:
+                sprintf(cmd_str, "Z ");
+                break;
+        }
+        if (strlen(buffer) + strlen(cmd_str) < max_size) {
+            strcat(buffer, cmd_str);
+        }
+        cmd_curr = cmd_curr->next;
+    }
+}
+
 //ajout de line dans le html
 void print_line_to_html(FILE *file, node_t *current){
     fprintf(file, "  <line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" stroke=\"#%s\" transform=\"translate(%d,%d) rotate(%d)\"/>\n", 
@@ -79,21 +117,32 @@ void print_polygone_to_html(FILE *file, node_t *current){
         current->fig.polygone->translate_x, current->fig.polygone->translate_y,
         current->fig.polygone->rotate);
 }
-
-// Fonction pour exporter toute la liste chaînée vers le fichier HTML/SVG
-void save_scene_to_html(void) {
-    FILE *file = fopen("index/index.html", "w");
-    if(file == NULL){
-        printf("Une erreur est survenue lors de l'ouverture du fichier HTML.\n");
-        return;
+// Ajout de path dans le html
+void print_path_to_html(FILE *file, node_t *current){
+    char d_buf[2048] = "";
+    print_path_commands_list(current->fig.path->commands_head, d_buf, sizeof(d_buf));
+    fprintf(file, "  <path d=\"%s\" stroke=\"#%s\" fill=\"#%s\" transform=\"translate(%d,%d) rotate(%d)\"/>\n",
+        d_buf, current->fig.path->color_border, current->fig.path->color,
+        current->fig.path->translate_x, current->fig.path->translate_y,
+        current->fig.path->rotate);
+}
+// Ajout de groupe dans le html (Récursif)
+void print_group_to_html(FILE *file, node_t *current){
+    fprintf(file, "  <g transform=\"translate(%d,%d) rotate(%d)\">\n",
+        current->fig.group->translate_x, current->fig.group->translate_y,
+        current->fig.group->rotate);
+    node_t *child = current->fig.group->children_head;
+    while (child != NULL) {
+        print_figure_to_html(file, child);
+        child = child->next;
     }
+    fprintf(file, "  </g>\n");
+}
 
-    fprintf(file, "<svg viewBox=\"-250 -250 500 500\" xmlns=\"http://www.w3.org/2000/svg\">\n");
-
-    node_t *current = ma_scene.head;
-    while (current != NULL) {
-        switch (current->type){
-        case LINE: //mettre les print dans des fonction tierce pour rendre le code plus lisible (a apliquer aussi dans le edit, quit er create)
+// Fonction générique pour router l'affichage selon le type
+void print_figure_to_html(FILE *file, node_t *current){
+    switch (current->type){
+        case LINE:
             print_line_to_html(file, current);
             break;
         case CIRCLE:
@@ -114,15 +163,36 @@ void save_scene_to_html(void) {
         case POLYGONE:
             print_polygone_to_html(file, current);
             break;
+        case PATH:
+            print_path_to_html(file, current);
+            break;
+        case GROUP:
+            print_group_to_html(file, current);
+            break;
         default:
             break;
-        }
+    }
+}
+
+// Mise à jour de la fonction principale d'exportation
+void save_scene_to_html(void) {
+    FILE *file = fopen("index/index.html", "w");
+    if(file == NULL){
+        printf("Une erreur est survenue lors de l'ouverture du fichier HTML.\n");
+        return;
+    }
+
+    fprintf(file, "<svg viewBox=\"-250 -250 500 500\" xmlns=\"http://www.w3.org/2000/svg\">\n");
+
+    node_t *current = ma_scene.head;
+    while (current != NULL) {
+        print_figure_to_html(file, current);
         current = current->next;
     }
     fprintf(file, "</svg>\n");
     fclose(file);
-/*
-//chercher comment le faire marcher plus tard (car pour le moment sa marche pas)
+    /*
+    //chercher comment le faire marcher plus tard (car pour le moment sa marche pas)
     // Commande système pour ouvrir le fichier HTML selon l'OS / environnement
     char command[512];
     #if defined(_WIN32) || defined(_WIN64)

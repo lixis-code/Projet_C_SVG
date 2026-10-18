@@ -294,6 +294,125 @@ int add_new_polygone(void){
     return 0;
 }
 
+// Fonction pour créer un Path (chemin)
+int add_new_path(void){
+    path_s *p = malloc(sizeof(path_s));
+    printf("Couleur de la bordure :\n");
+    p->color_border = add_color();
+    printf("Couleur du fond :\n");
+    p->color = add_color();
+    p->translate_x = 0;
+    p->translate_y = 0;
+    p->rotate = 0;
+    p->commands_head = NULL;
+    p->nb_commands = 0;
+
+    path_command_node_t *last_cmd = NULL;
+    bool building = true;
+
+    printf("\n--- Construction du Path ---\n");
+    while (building) {
+        unsigned char cmd_choice;
+        printf("Choisissez une commande :\n");
+        printf("=> 0 - Fin du path\n");
+        printf("=> 1 - MoveTo (M)\n");
+        printf("=> 2 - LineTo (L)\n");
+        printf("=> 3 - CurveTo (C - Cubique)\n");
+        printf("=> 4 - Close (Z)\n");
+        scanf(" %c", &cmd_choice);
+        clear_stdin();
+
+        path_command_node_t *new_cmd = malloc(sizeof(path_command_node_t));
+        new_cmd->next = NULL;
+
+        switch (cmd_choice) {
+            case '0':
+                free(new_cmd);
+                building = false;
+                continue;
+            case '1':
+                new_cmd->type = MOVETO;
+                printf("Point d'arrivée :\n");
+                add_new_point(&new_cmd->p);
+                break;
+            case '2':
+                new_cmd->type = LINETO;
+                printf("Point d'arrivée :\n");
+                add_new_point(&new_cmd->p);
+                break;
+            case '3':
+                new_cmd->type = CURVETO;
+                printf("Premier point de contrôle (ctrl1) :\n");
+                add_new_point(&new_cmd->ctrl1);
+                printf("Second point de contrôle (ctrl2) :\n");
+                add_new_point(&new_cmd->ctrl2);
+                printf("Point d'arrivée :\n");
+                add_new_point(&new_cmd->p);
+                break;
+            case '4':
+                new_cmd->type = CLOSE;
+                new_cmd->p.x = 0;
+                new_cmd->p.y = 0;
+                building = false; // Souvent le Z termine le path
+                break;
+            default:
+                printf("Commande invalide\n");
+                free(new_cmd);
+                continue;
+        }
+
+        if (p->commands_head == NULL) {
+            p->commands_head = new_cmd;
+        } else {
+            last_cmd->next = new_cmd;
+        }
+        last_cmd = new_cmd;
+        p->nb_commands++;
+    }
+
+    node_t *new_node = malloc(sizeof(node_t));
+    new_node->fig.path = p;
+    new_node->type = PATH;
+    new_node->next = NULL;
+
+    add_to_scene(new_node);
+    return 0;
+}
+
+// Fonction pour créer un Groupe
+int add_new_group(void){
+    group_s *g = malloc(sizeof(group_s));
+    g->translate_x = 0;
+    g->translate_y = 0;
+    g->rotate = 0;
+    g->children_head = NULL;
+    g->nb_children = 0;
+
+    printf("\n--- Creation d'un Groupe ---\n");
+    // Sauvegarde temporaire de la scène globale pour ajouter des enfants au groupe
+    Scene old_scene = ma_scene;
+    ma_scene.head = NULL;
+    ma_scene.count = 0;
+
+    // L'utilisateur ajoute des formes qui appartiendront au groupe
+    add_new_form();
+
+    // Récupération des enfants créés
+    g->children_head = ma_scene.head;
+    g->nb_children = ma_scene.count;
+
+    // Restauration de la scène principale
+    ma_scene = old_scene;
+
+    node_t *new_node = malloc(sizeof(node_t));
+    new_node->fig.group = g;
+    new_node->type = GROUP;
+    new_node->next = NULL;
+
+    add_to_scene(new_node);
+    return 0;
+}
+
 //fonction principal
 int add_new_form(void){
     unsigned char choice;
@@ -309,6 +428,8 @@ int add_new_form(void){
         printf("=> 5 - Rectangle\n");
         printf("=> 6 - Multi ligne\n");
         printf("=> 7 - Polygone\n");
+        printf("=> 8 - Chemin\n");
+        printf("=> 9 - Groupe\n");
         scanf(" %c",&choice);
         clear_stdin();
         switch (choice){
@@ -335,6 +456,12 @@ int add_new_form(void){
             break;
         case '7':
             add_new_polygone();
+            break;
+        case '8':
+            add_new_path();
+            break;
+        case '9':
+            add_new_group();
             break;
         default:
             printf("Option invalide\n");

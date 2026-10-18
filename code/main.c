@@ -1,5 +1,5 @@
 #include "projet_svg.h"
-//fonction principal
+//fonction main
 int main(void){
     unsigned char choice;
     printf("------------Projet C SVG------------\n");

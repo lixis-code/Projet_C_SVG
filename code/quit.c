@@ -58,6 +58,28 @@ void free_polygone(node_t *current){
     free(current->fig.polygone->color);
     free(current->fig.polygone);
 }
+// Liberation de la memoire d'un path
+void free_path(node_t *current){
+    path_command_node_t *cmd_curr = current->fig.path->commands_head;
+    while (cmd_curr != NULL) {
+        path_command_node_t *next_cmd = cmd_curr->next;
+        free(cmd_curr);
+        cmd_curr = next_cmd;
+    }
+    free(current->fig.path->color);
+    free(current->fig.path->color_border);
+    free(current->fig.path); // Note: attention au point-virgule, juste free(current->fig.path)
+}
+// Liberation de la memoire d'un groupe (Récursif)
+void free_group(node_t *current){
+    node_t *child = current->fig.group->children_head;
+    while (child != NULL) {
+        node_t *next_child = child->next;
+        free_figure(child);
+        child = next_child;
+    }
+    free(current->fig.group);
+}
 
 // Libération complète de la mémoire de la figure
 void free_figure(node_t *current){
@@ -82,6 +104,12 @@ void free_figure(node_t *current){
             break;
         case POLYGONE:
             free_polygone(current);
+            break;
+        case PATH:
+            free_path(current);
+            break;
+        case GROUP:
+            free_group(current);
             break;
         default:
             break;

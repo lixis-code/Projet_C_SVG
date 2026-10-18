@@ -15,11 +15,24 @@
         SQUARE,
         RECTANGLE,
         MULTI_LINE,
-        POLYGONE
+        POLYGONE,
+        PATH,
+        GROUP
     } figure_type_t;
 
+    // Types de commandes possibles pour le Path (M, L, C, S, Q, T, Z)
+    typedef enum {
+        MOVETO,        // M
+        LINETO,        // L
+        CURVETO,       // C (Cubique classique)
+        SMOOTH_CURVE,  // S (Cubique lisse)
+        QUAD,          // Q (Quadratique)
+        SMOOTH_QUAD,   // T (Quadratique lisse)
+        CLOSE          // Z
+    } path_cmd_type_t;
+
     //couleur en exa sous la forme suivante #ffffff => stroke = border, fill = remplissage
-    //variable
+    //structure
 
     //point
     typedef struct point_t{
@@ -27,10 +40,20 @@
         int y;
     }point;
 
+    //liste chainer de point
     typedef struct point_node_t {
         point pt;
         struct point_node_t *next;
     } point_node_t;
+
+    // Noeud d'une commande pour la liste chaînée du Path
+    typedef struct path_command_node_t {
+        path_cmd_type_t type;
+        point p;              // Point d'arrivée
+        point ctrl1;          // Point de contrôle 1 (ou unique pour Q)
+        point ctrl2;          // Point de contrôle 2 (pour C et S)
+        struct path_command_node_t *next;
+    } path_command_node_t;
 
     //ligne
     typedef struct line_t{
@@ -109,7 +132,25 @@
         int rotate;
     }polygone_s;
 
-    //ajouter trajectoire (chemin) / groupe
+    typedef struct path_t {
+        char *color;
+        char *color_border;
+        path_command_node_t *commands_head;
+        int nb_commands;
+        int translate_x;
+        int translate_y;
+        int rotate;
+    } path_s;
+
+    typedef struct node_t node_t; // Declaration anticiper pour passer la compilation
+
+    typedef struct group_t {
+        node_t *children_head; // Sous-liste des figures contenues dans le groupe
+        int nb_children;      // Nombre de figures dans le groupe
+        int translate_x;
+        int translate_y;
+        int rotate;
+    } group_s;
 
     //figures
     typedef union figure_t{
@@ -120,6 +161,8 @@
         rectangle_s *rectangle;
         multi_line_s *multi_line;
         polygone_s *polygone;
+        path_s *path;
+        group_s *group;
     }figure;
 
     // Élément de la liste chaînée
@@ -143,6 +186,8 @@
     void clear_stdin(void);
     int add_new_point(point *p);
     int add_int(void);
+    void free_figure(node_t *current);
+    void print_figure_to_html(FILE *file, node_t *current);
     void free_figure(node_t *current);
 
     //fonction principal des different programme
