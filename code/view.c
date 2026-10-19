@@ -174,6 +174,28 @@ void print_figure_to_html(FILE *file, node_t *current){
     }
 }
 
+// Fonction pour ouvrir automatiquement le fichier HTML dans le navigateur par défaut
+void open_html(void){
+    char command[512];
+    const char *filename = "index/index.html";
+
+#if defined(_WIN32) || defined(_WIN64)
+    // Windows
+    sprintf(command, "start %s", filename);
+#elif defined(__APPLE__)
+    // macOS
+    sprintf(command, "open %s", filename);
+#else
+    // Linux / WSL (redirection des sorties pour éviter de polluer le terminal)
+    sprintf(command, "cmd.exe /c start %s > /dev/null 2>&1", filename);
+#endif
+
+    int ret = system(command);
+    if (ret == -1) {
+        printf("Impossible d'ouvrir automatiquement le navigateur.\n");
+    }
+}
+
 // Mise à jour de la fonction principale d'exportation
 void save_scene_to_html(void) {
     FILE *file = fopen("index/index.html", "w");
@@ -191,17 +213,5 @@ void save_scene_to_html(void) {
     }
     fprintf(file, "</svg>\n");
     fclose(file);
-    /*
-    //chercher comment le faire marcher plus tard (car pour le moment sa marche pas)
-    // Commande système pour ouvrir le fichier HTML selon l'OS / environnement
-    char command[512];
-    #if defined(_WIN32) || defined(_WIN64)
-        sprintf(command, "start %s", filename);
-    #elif defined(__APPLE__)
-        sprintf(command, "open %s", filename);
-    #else
-        // Linux / WSL
-        sprintf(command, "xdg-open %s > /dev/null 2>&1 &", file);
-    #endif
-    system(command);*/
+    open_html();
 }
