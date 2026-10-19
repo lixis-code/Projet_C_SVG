@@ -1,5 +1,14 @@
+/**
+ * @file main.c
+ * @author Vayssiere Alexis
+ * @date 2026-10-12
+ * @brief Point d'entrée principal pour le projet de manipulation de fichiers SVG.
+ */
 #include "projet_svg.h"
-//fonction main
+/**
+ * @brief Fonction principale du programme (Point d'entrée).
+ * @return int Retourne 0 si le programme s'arrête normalement (quitté par l'utilisateur).
+ */
 int main(void){
     unsigned char choice;
     printf("------------Projet C SVG------------\n");
@@ -12,10 +21,8 @@ int main(void){
         printf("=> 4 - Charger un projet\n");
         printf("=> 5 - Visualiser le projet\n");
         scanf(" %c",&choice);
-        //vide le buffer d entrer
         clear_stdin();
-        //gestion des choix
-        switch (choice){
+        switch (choice){//gestion des choix
         case '0':
             free_scene();
             return 0;

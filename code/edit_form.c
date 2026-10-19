@@ -1,20 +1,52 @@
+/**
+ * @file edit_form.c
+ * @author Vayssiere Alexis
+ * @date 2026-10-15
+ * @brief Gestion de toutes les modifications du projet courant.
+ * @details Contient l'ensemble des fonctions permettant de lister, modifier, 
+ *          déplacer (translation), pivoter (rotation) ou supprimer les formes 
+ *          et leurs éléments constitutifs (points, couleurs, commandes de path, groupes).
+ */
 #include "projet_svg.h"
 
+/**
+ * @brief Modifie les coordonnées d'un point en affichant un message personnalisé.
+ * @param[out] p Pointeur vers le point à modifier.
+ * @param[in] m Message d'invite à afficher avant la saisie.
+ */
 void edit_point(point *p, char *m){
     printf("%s", m);
     add_new_point(p);
 }
+
+/**
+ * @brief Libère l'ancienne couleur, puis en alloue et saisit une nouvelle.
+ * @param[in,out] color Pointeur vers la chaîne de caractères de la couleur actuelle.
+ * @param[in] m Message d'invite à afficher.
+ */
 void edit_color(char *color, char*m){
     free(color);
     printf("%s", m);
     color = add_color();
 }
+
+/**
+ * @brief Saisit un nouvel entier après affichage d'un message.
+ * @param[in] m Message d'invite à afficher.
+ * @return int L'entier saisi.
+ */
 int edit_int(char *m){
     printf("%s", m);
     int i = add_int();
     return i;
 }
 
+/**
+ * @brief Affiche un menu interactif pour modifier une ligne.
+ * @param[in,out] current Pointeur vers le nœud contenant la ligne.
+ * @param[in] index Position de la forme dans la scène.
+ * @return int Retourne 0 en cas de succès.
+ */
 int edit_line(node_t *current, int index){
     char choice;
     printf("\nModification de la Ligne [%d]\n", index);
@@ -47,6 +79,12 @@ int edit_line(node_t *current, int index){
     }
 }
 
+/**
+ * @brief Affiche un menu interactif pour modifier un cercle.
+ * @param[in,out] current Pointeur vers le nœud contenant le cercle.
+ * @param[in] index Position de la forme dans la scène.
+ * @return int Retourne 0 en cas de succès.
+ */
 int edit_circle(node_t *current, int index){
     char choice;
     printf("\nModification du cercle [%d]\n", index);
@@ -84,6 +122,12 @@ int edit_circle(node_t *current, int index){
     }
 }
 
+/**
+ * @brief Affiche un menu interactif pour modifier une ellipse.
+ * @param[in,out] current Pointeur vers le nœud contenant l'ellipse.
+ * @param[in] index Position de la forme dans la scène.
+ * @return int Retourne 0 en cas de succès.
+ */
 int edit_ellipse(node_t *current, int index){
     char choice;
     printf("\nModification de l ellipse [%d]\n", index);
@@ -126,6 +170,12 @@ int edit_ellipse(node_t *current, int index){
     }
 }
 
+/**
+ * @brief Affiche un menu interactif pour modifier un carré.
+ * @param[in,out] current Pointeur vers le nœud contenant le carré.
+ * @param[in] index Position de la forme dans la scène.
+ * @return int Retourne 0 en cas de succès.
+ */
 int edit_square(node_t *current, int index){
     char choice;
     printf("\nModification du carré [%d]\n", index);
@@ -163,6 +213,12 @@ int edit_square(node_t *current, int index){
     }
 }
 
+/**
+ * @brief Affiche un menu interactif pour modifier un rectangle.
+ * @param[in,out] current Pointeur vers le nœud contenant le rectangle.
+ * @param[in] index Position de la forme dans la scène.
+ * @return int Retourne 0 en cas de succès.
+ */
 int edit_rectangle(node_t *current, int index){
     char choice;
     printf("\nModification du rectangle [%d]\n", index);
@@ -205,7 +261,11 @@ int edit_rectangle(node_t *current, int index){
     }
 }
 
-// Modifier un point existant à un index donné
+/**
+ * @brief Modifie un point existant à un index donné dans une liste chaînée de points.
+ * @param[in,out] head_ref Pointeur vers la tête de la liste de points.
+ * @param[in] num_points Nombre total de points dans la liste.
+ */
 void edit_point_in_list(point_node_t **head_ref, int num_points) {
     int target_idx;
     printf("Entrez l'index du point à modifier (0 à %d) : ", num_points - 1);
@@ -225,7 +285,11 @@ void edit_point_in_list(point_node_t **head_ref, int num_points) {
     printf("Point modifié avec succès !\n");
 }
 
-// Ajouter un nouveau point à un index donné
+/**
+ * @brief Insère un nouveau point à un index donné dans une liste chaînée de points.
+ * @param[in,out] head_ref Pointeur vers la tête de la liste de points.
+ * @param[in,out] num_points_ref Pointeur vers le compteur du nombre de points.
+ */
 void edit_add_point(point_node_t **head_ref, int *num_points_ref) {
     int target_idx;
     printf("Entrez l'index où insérer le nouveau point (0 à %d) : ", *num_points_ref);
@@ -261,7 +325,12 @@ void edit_add_point(point_node_t **head_ref, int *num_points_ref) {
     printf("Point ajouté avec succès !\n");
 }
 
-// Supprimer un point à un index donné
+/**
+ * @brief Supprime un point d'une liste chaînée de points à un index donné.
+ * @param[in,out] head_ref Pointeur vers la tête de la liste de points.
+ * @param[in,out] num_points_ref Pointeur vers le compteur du nombre de points.
+ * @param[in] min_points Nombre minimal de points requis pour conserver la forme.
+ */
 void edit_del_point(point_node_t **head_ref, int *num_points_ref, int min_points) {
     if (*num_points_ref <= min_points) {
         printf("Erreur : Impossible de supprimer ce point. Minimum requis : %d points.\n", min_points);
@@ -294,7 +363,13 @@ void edit_del_point(point_node_t **head_ref, int *num_points_ref, int min_points
     printf("Point supprimé avec succès !\n");
 }
 
-// Fonction générique pour éditer, ajouter ou supprimer des points dans une liste chaînée de points
+/**
+ * @brief Menu interactif pour éditer la liste des points d'une multi-ligne ou d'un polygone.
+ * @param[in,out] head_ref Pointeur vers la tête de la liste de points.
+ * @param[in,out] num_points_ref Pointeur vers le nombre total de points.
+ * @param[in] min_points Nombre minimal de points requis.
+ * @return int Retourne 0 à la fin de l'édition.
+ */
 int edit_points_list(point_node_t **head_ref, int *num_points_ref, int min_points) {
     char choice;
     while (1) {
@@ -339,6 +414,12 @@ int edit_points_list(point_node_t **head_ref, int *num_points_ref, int min_point
     }
 }
 
+/**
+ * @brief Affiche un menu interactif pour modifier une ligne brisée (polyline).
+ * @param[in,out] current Pointeur vers le nœud contenant la multi-ligne.
+ * @param[in] index Position de la forme dans la scène.
+ * @return int Retourne 0 en cas de succès.
+ */
 int edit_multi_line(node_t *current, int index){
     char choice;
     printf("\nModification de la Polyline [%d]\n", index);
@@ -366,6 +447,12 @@ int edit_multi_line(node_t *current, int index){
     }
 }
 
+/**
+ * @brief Affiche un menu interactif pour modifier un polygone.
+ * @param[in,out] current Pointeur vers le nœud contenant le polygone.
+ * @param[in] index Position de la forme dans la scène.
+ * @return int Retourne 0 en cas de succès.
+ */
 int edit_polygone(node_t *current, int index){
     char choice;
     printf("\nModification du Polygone [%d]\n", index);
@@ -398,9 +485,10 @@ int edit_polygone(node_t *current, int index){
     }
 }
 
-//----------------------------------Fonction de modification de path-----------------------------------------------------------
-
-// Saisie/mise à jour d'une commande de path selon son type
+/**
+ * @brief Demande et met à jour les données (type, points, contrôles) d'une commande de path.
+ * @param[out] cmd Pointeur vers le nœud de commande du path à configurer.
+ */
 void prompt_path_command_data(path_command_node_t *cmd) {
     char cmd_choice;
     printf("Type de commande :\n");
@@ -467,7 +555,11 @@ void prompt_path_command_data(path_command_node_t *cmd) {
     }
 }
 
-// Modifier une commande existante
+/**
+ * @brief Modifie une commande existante dans un path à partir de son index.
+ * @param[in,out] head_ref Pointeur vers la tête de la liste des commandes.
+ * @param[in] nb_commands Nombre total de commandes.
+ */
 void edit_command_in_path(path_command_node_t **head_ref, int nb_commands) {
     int target_idx;
     printf("Entrez l'index de la commande à modifier (0 à %d) : ", nb_commands - 1);
@@ -487,7 +579,11 @@ void edit_command_in_path(path_command_node_t **head_ref, int nb_commands) {
     printf("Commande modifiée avec succès !\n");
 }
 
-// Ajouter une nouvelle commande à la liste du Path
+/**
+ * @brief Insère une nouvelle commande à un index donné dans un path.
+ * @param[in,out] head_ref Pointeur vers la tête de la liste des commandes.
+ * @param[in,out] nb_commands_ref Pointeur vers le nombre total de commandes.
+ */
 void edit_add_command_to_path(path_command_node_t **head_ref, int *nb_commands_ref) {
     int target_idx;
     printf("Entrez l'index où insérer la nouvelle commande (0 à %d) : ", *nb_commands_ref);
@@ -520,7 +616,11 @@ void edit_add_command_to_path(path_command_node_t **head_ref, int *nb_commands_r
     printf("Commande ajoutée avec succès !\n");
 }
 
-// Supprimer une commande du Path
+/**
+ * @brief Supprime une commande d'un path à un index donné.
+ * @param[in,out] head_ref Pointeur vers la tête de la liste des commandes.
+ * @param[in,out] nb_commands_ref Pointeur vers le nombre total de commandes.
+ */
 void edit_del_command_from_path(path_command_node_t **head_ref, int *nb_commands_ref) {
     if (*nb_commands_ref <= 1) {
         printf("Erreur : Un Path doit contenir au moins 1 commande.\n");
@@ -553,7 +653,12 @@ void edit_del_command_from_path(path_command_node_t **head_ref, int *nb_commands
     printf("Commande supprimée avec succès !\n");
 }
 
-// Menu d'édition de la liste chaînée des commandes de Path
+/**
+ * @brief Menu interactif pour gérer les commandes d'un path (modifier, ajouter, supprimer).
+ * @param[in,out] head_ref Pointeur vers la tête de la liste des commandes.
+ * @param[in,out] nb_commands_ref Pointeur vers le nombre total de commandes.
+ * @return int Retourne 0 à la fin de l'édition.
+ */
 int edit_path_commands_list(path_command_node_t **head_ref, int *nb_commands_ref) {
     char choice;
     while (1) {
@@ -609,9 +714,13 @@ int edit_path_commands_list(path_command_node_t **head_ref, int *nb_commands_ref
         }
     }
 }
-//--------------------------------------------------------------------------------------------------------------------------------
 
-// Modification d'un Path
+/**
+ * @brief Affiche un menu interactif pour modifier un path (commandes et couleurs).
+ * @param[in,out] current Pointeur vers le nœud contenant le path.
+ * @param[in] index Position de la forme dans la scène.
+ * @return int Retourne 0 en cas de succès.
+ */
 int edit_path(node_t *current, int index){
     char choice;
     printf("\nModification du Path [%d]\n", index);
@@ -644,19 +753,24 @@ int edit_path(node_t *current, int index){
     }
 }
 
-// Modification d'un Groupe (Permet d'éditer la scène interne du groupe)
+/**
+ * @brief Permet d'éditer les figures enfants contenues à l'intérieur d'un groupe.
+ * @details Sauvegarde temporairement la scène globale, bascule sur la liste 
+ *          des enfants du groupe, appelle `edit_form()`, puis restaure la scène.
+ * 
+ * @param[in,out] current Pointeur vers le nœud contenant le groupe.
+ * @param[in] index Position du groupe dans la scène.
+ * @return int Retourne 0 en cas de succès.
+ */
 int edit_group(node_t *current, int index){
     printf("\nModification des elements du Groupe [%d]\n", index);
     
-    // Sauvegarde de la scène principale et basculement sur la scène du groupe
     Scene old_scene = ma_scene;
     ma_scene.head = current->fig.group->children_head;
     ma_scene.count = current->fig.group->nb_children;
 
-    // Appel de la fonction edit_form sur les enfants du groupe
     edit_form();
 
-    // Restauration de la scène principale
     current->fig.group->children_head = ma_scene.head;
     current->fig.group->nb_children = ma_scene.count;
     ma_scene = old_scene;
@@ -664,6 +778,12 @@ int edit_group(node_t *current, int index){
     return 0;
 }
 
+/**
+ * @brief Fonction de routage générique pour éditer une forme selon son type.
+ * @param[in,out] current Pointeur vers le nœud de la figure à modifier.
+ * @param[in] index Position de la forme dans la scène.
+ * @return int Retourne 0 en cas de succès, -1 en cas d'erreur.
+ */
 int edit(node_t *current, int index){
     switch (current->type)
     {
@@ -703,6 +823,11 @@ int edit(node_t *current, int index){
     return 0;
 }
 
+/**
+ * @brief Applique une translation (déplacement X, Y) à n'importe quel type de figure.
+ * @param[in,out] current Pointeur vers le nœud de la figure à translater.
+ * @return int Retourne 0 en cas de succès, -1 en cas d'erreur.
+ */
 int translate(node_t *current){
     int tx, ty;
     bool verif;
@@ -764,6 +889,11 @@ int translate(node_t *current){
     return 0;
 }
 
+/**
+ * @brief Applique une rotation (en degrés) à n'importe quel type de figure.
+ * @param[in,out] current Pointeur vers le nœud de la figure à faire pivoter.
+ * @return int Retourne 0 en cas de succès, -1 en cas d'erreur.
+ */
 int rotate(node_t *current){
     int angle;
     bool verif;
@@ -810,23 +940,30 @@ int rotate(node_t *current){
     return 0;
 }
 
+/**
+ * @brief Supprime une figure de la liste chaînée principale de la scène.
+ * @param[in,out] current Pointeur vers le nœud à supprimer.
+ * @param[in,out] prev Pointeur vers le nœud précédent (NULL si c'est la tête).
+ * @return int Retourne 0 en cas de succès.
+ */
 int delete(node_t *current, node_t *prev){
     if (prev == NULL) {
-        // Suppression du premier élément
         ma_scene.head = current->next;
     } else {
-        // Suppression d'un élément intermédiaire ou de fin
         prev->next = current->next;
     }
 
-    // Libération de la mémoire de l'élément supprimé
     free_figure(current);
     ma_scene.count--;
     printf("Forme supprimee avec succes !\n");
     return 0;
 }
 
-//affichage line
+/**
+ * @brief Affiche un résumé textuel d'une ligne dans la console.
+ * @param[in] current Pointeur vers le nœud de la ligne.
+ * @param[in] i Index de la ligne.
+ */
 void print_line(node_t *current, int i){
     printf("[%d] Ligne (Point A: %d,%d | Point B: %d,%d | Trans: %d,%d | Rot: %d°)\n", 
         i, current->fig.line->a->x, current->fig.line->a->y,
@@ -834,7 +971,12 @@ void print_line(node_t *current, int i){
         current->fig.line->translate_x, current->fig.line->translate_y,
         current->fig.line->rotate);
 }
-//affichage cercle
+
+/**
+ * @brief Affiche un résumé textuel d'un cercle dans la console.
+ * @param[in] current Pointeur vers le nœud du cercle.
+ * @param[in] i Index du cercle.
+ */
 void print_circle(node_t *current, int i){
     printf("[%d] Cercle (Centre: %d,%d | Rayon: %d | Trans: %d,%d | Rot: %d°)\n", 
         i, current->fig.circle->center->x, current->fig.circle->center->y, 
@@ -842,7 +984,12 @@ void print_circle(node_t *current, int i){
         current->fig.circle->translate_x, current->fig.circle->translate_y,
         current->fig.circle->rotate);
 }
-//affichage ellipse
+
+/**
+ * @brief Affiche un résumé textuel d'une ellipse dans la console.
+ * @param[in] current Pointeur vers le nœud de l'ellipse.
+ * @param[in] i Index de l'ellipse.
+ */
 void print_ellipse(node_t *current, int i){
     printf("[%d] Ellipse (Centre: %d,%d | Rayon x: %d | Rayon y: %d | Trans: %d,%d | Rot: %d°)\n",
         i, current->fig.ellipse->center->x, current->fig.ellipse->center->y,
@@ -850,7 +997,12 @@ void print_ellipse(node_t *current, int i){
         current->fig.ellipse->translate_x, current->fig.ellipse->translate_y,
         current->fig.ellipse->rotate);
 }
-//affichage carré
+
+/**
+ * @brief Affiche un résumé textuel d'un carré dans la console.
+ * @param[in] current Pointeur vers le nœud du carré.
+ * @param[in] i Index du carré.
+ */
 void print_square(node_t *current, int i){
     printf("[%d] Carré (Origine: %d,%d | Largeur: %d | Trans: %d,%d | Rot: %d°)\n",
         i, current->fig.square->origin->x, current->fig.square->origin->y,
@@ -858,7 +1010,12 @@ void print_square(node_t *current, int i){
         current->fig.square->translate_x, current->fig.square->translate_y,
         current->fig.square->rotate);
 }
-//affichage rectangle
+
+/**
+ * @brief Affiche un résumé textuel d'un rectangle dans la console.
+ * @param[in] current Pointeur vers le nœud du rectangle.
+ * @param[in] i Index du rectangle.
+ */
 void print_rectangle(node_t *current, int i){
     printf("[%d] Rectangle (Origine: %d;%d | Largeur: %d | Longueur: %d | Trans: %d,%d | Rot: %d°)\n",
         i, current->fig.rectangle->origin->x, current->fig.rectangle->origin->y,
@@ -866,28 +1023,48 @@ void print_rectangle(node_t *current, int i){
         current->fig.rectangle->translate_x, current->fig.rectangle->translate_y,
         current->fig.rectangle->rotate);
 }
-//affiche multi-ligne
+
+/**
+ * @brief Affiche un résumé textuel d'une multi-ligne dans la console.
+ * @param[in] current Pointeur vers le nœud de la multi-ligne.
+ * @param[in] i Index de la multi-ligne.
+ */
 void print_multi_line(node_t *current, int i){
     printf("[%d] Multi ligne (%d points | Trans: %d,%d | Rot: %d°)\n",
         i, current->fig.multi_line->nb_points,
         current->fig.multi_line->translate_x, current->fig.multi_line->translate_y,
         current->fig.multi_line->rotate);
 }
-//affiche polygone
+
+/**
+ * @brief Affiche un résumé textuel d'un polygone dans la console.
+ * @param[in] current Pointeur vers le nœud du polygone.
+ * @param[in] i Index du polygone.
+ */
 void print_polygone(node_t *current, int i){
     printf("[%d] Polygone (%d points | Trans: %d,%d | Rot: %d°)\n",
         i, current->fig.polygone->nb_points,
         current->fig.polygone->translate_x, current->fig.polygone->translate_y,
         current->fig.polygone->rotate);
 }
-//affiche chemin
+
+/**
+ * @brief Affiche un résumé textuel d'un path dans la console.
+ * @param[in] current Pointeur vers le nœud du path.
+ * @param[in] i Index du path.
+ */
 void print_path(node_t *current, int i){
     printf("[%d] Path (%d commandes | Trans: %d,%d | Rot: %d°)\n",
         i, current->fig.path->nb_commands,
         current->fig.path->translate_x, current->fig.path->translate_y,
         current->fig.path->rotate);
 }
-//affiche groupe
+
+/**
+ * @brief Affiche un résumé textuel d'un groupe dans la console.
+ * @param[in] current Pointeur vers le nœud du groupe.
+ * @param[in] i Index du groupe.
+ */
 void print_group(node_t *current, int i){
     printf("[%d] Groupe (%d elements | Trans: %d,%d | Rot: %d°)\n",
         i, current->fig.group->nb_children,
@@ -895,7 +1072,14 @@ void print_group(node_t *current, int i){
         current->fig.group->rotate);
 }
 
-//fonction principal
+/**
+ * @brief Fonction principale de gestion et d'édition des formes de la scène.
+ * @details Affiche la liste de toutes les formes enregistrées, demande à l'utilisateur 
+ *          laquelle il souhaite sélectionner, puis propose les actions disponibles 
+ *          (modifier, translater, pivoter, supprimer).
+ * 
+ * @return int Retourne 0 en cas de succès, -1 en cas d'erreur.
+ */
 int edit_form(void) {
     if (ma_scene.count == 0 || ma_scene.head == NULL) {
         printf("\nAucune forme presente dans le projet.\n");
@@ -952,47 +1136,44 @@ int edit_form(void) {
         clear_stdin();
     }while(verif !=1 || index < 0 || index >= ma_scene.count);
 
-    // Recherche du nœud précédent et du nœud cible pour gérer la liste chaînée (notamment en cas de suppression)
+    // Recherche du nœud précédent et du nœud cible
     node_t *prev = NULL;
     current = ma_scene.head;
-    int current_index = 0;
-    while (current != NULL && current_index < index) {
+    for (int j = 0; j < index; j++) {
         prev = current;
         current = current->next;
-        current_index++;
     }
 
-    if (current == NULL) {
-        printf("Erreur : Forme introuvable.\n");
-        return -1;
-    }
+    printf("\nActions disponibles pour la forme [%d] :\n", index);
+    printf("=> 1 : Éditer les propriétés\n");
+    printf("=> 2 : Déplacer (Translation)\n");
+    printf("=> 3 : Faire pivoter (Rotation)\n");
+    printf("=> 4 : Supprimer\n");
+    printf("=> 5 : Annuler\n");
 
-    // Sous-menu d'édition
-    unsigned char sub_choice;
-    printf("\nOptions d'edition pour la forme [%d] :\n", index);
-    printf("=> 1 - Modifier les parametres de base (points/couleurs/rayons...)\n");
-    printf("=> 2 - Deplacer (Translate)\n");
-    printf("=> 3 - Pivoter (Rotate)\n");
-    printf("=> 4 - Supprimer la figure\n");
-    scanf(" %c", &sub_choice);
+    unsigned char action;
+    scanf(" %c", &action);
     clear_stdin();
 
-    switch (sub_choice) {
-        case '1': // Modification classique
+    switch (action) {
+        case '1':
             edit(current, index);
             break;
-        case '2': // Déplacement (Translate)
+        case '2':
             translate(current);
             break;
-        case '3': // Rotation (Rotate)
+        case '3':
             rotate(current);
             break;
-        case '4': // Suppression avec ré-attachement de la liste
+        case '4':
             delete(current, prev);
             break;
+        case '5':
+            break;
         default:
-            printf("Option invalide.\n");
+            printf("Action invalide.\n");
             break;
     }
+
     return 0;
 }

@@ -1,15 +1,31 @@
+/**
+ * @file create_form.c
+ * @author Vayssiere Alexis
+ * @date 2026-10-13
+ * @brief Gestion des fonction lier a la creation de forme.
+ */
 #include "projet_svg.h"
 
 // Définition de la scène globale
 Scene ma_scene = { .count = 0 };
 
-//fonction pour vider le buffer d'entrer
+/**
+ * @brief Vide le buffer d'entrée standard (stdin).
+ * @details Lit et supprime tous les caractères restants dans le tampon clavier 
+ *          jusqu'au retour à la ligne (`\n`) ou à la fin de fichier (`EOF`).
+ */
 void clear_stdin(void) {
     int c;
     while ((c = getc(stdin)) != '\n' && c != EOF);
 }
 
-//ajout en fin de liste
+/**
+ * @brief Ajoute un nœud (figure) à la fin de la liste chaînée de la scène globale.
+ * @details Si la scène est vide, le nœud devient la tête de liste. Sinon, 
+ *          la fonction parcourt la liste jusqu'au dernier élément pour y attacher 
+ *          le nouveau nœud et incrémente le compteur global.
+ * @param[in,out] node Pointeur vers le nœud de figure à ajouter à la scène.
+ */
 void add_to_scene(node_t *node){
     if (ma_scene.head == NULL) {
         ma_scene.head = node;
@@ -23,7 +39,13 @@ void add_to_scene(node_t *node){
     ma_scene.count++;
 }
 
-//fonction qui demande le nombre de point souhaiter
+/**
+ * @brief Demande et valide le nombre de points souhaité auprès de l'utilisateur.
+ * @details Boucle tant que la saisie n'est pas un entier valide ou qu'elle est 
+ *          inférieure au seuil minimal spécifié.
+ * @param[in] min_points Le nombre minimal de points requis.
+ * @return int Le nombre de points valide saisi par l'utilisateur.
+ */
 int add_nb_points(int min_points) {
     int n;
     int verif;
@@ -35,7 +57,15 @@ int add_nb_points(int min_points) {
     return n;
 }
 
-//fonction pour demander et valider une couleur hexadécimale (format RRGGBB)
+/**
+ * @brief Demande, valide et alloue dynamiquement une couleur au format hexadécimal (RRGGBB).
+ * @details Vérifie que la saisie comporte exactement 6 caractères et qu'ils sont 
+ *          tous des caractères hexadécimaux valides (0-9, A-F). En cas de succès, 
+ *          alloue dynamiquement une chaîne pour stocker la couleur.
+ * @return char* Un pointeur vers la chaîne de caractères allouée dynamiquement 
+ *               contenant la couleur, ou NULL en cas d'échec d'allocation.
+ * @note La mémoire allouée par cette fonction devra être libérée par la suite.
+ */
 char* add_color(void) {
     char buffer[20];
     bool valide = false;
@@ -73,7 +103,13 @@ char* add_color(void) {
     return color;
 }
 
-//fonction pour créé les points
+/**
+ * @brief Demande et valide les coordonnées (abscisse et ordonnée) d'un point 2D.
+ * @details Invite l'utilisateur à saisir séparément x et y en s'assurant qu'il s'agit 
+ *          d'entiers compris de manière inclusive entre -250 et 250.
+ * @param[out] p Pointeur vers la structure point à initialiser et remplir.
+ * @return int Retourne 0 en cas de succès.
+ */
 int add_new_point(point *p){
     int verif;
     do{
@@ -91,7 +127,12 @@ int add_new_point(point *p){
     return 0;
 }
 
-//fonction pour créé le rayon
+/**
+ * @brief Demande et valide la saisie d'un entier strictement positif.
+ * @details Généralement utilisé pour définir des rayons, des largeurs ou des hauteurs. 
+ *          Boucle tant que la valeur saisie n'est pas un entier ou est inférieure ou égale à 0.
+ * @return int L'entier strictement positif saisi.
+ */
 int add_int(void){
     int r;
     int verif;
@@ -104,7 +145,14 @@ int add_int(void){
     return r;
 }
 
-// Fonction pour créer les rectangle
+/**
+ * @brief Crée et ajoute un nouveau rectangle à la scène.
+ * @details Alloue dynamiquement une structure de rectangle, demande à l'utilisateur 
+ *          son point d'origine, ses couleurs de bordure et de fond, ainsi que 
+ *          sa largeur et sa hauteur. Initialise les transformations (translation, rotation) 
+ *          à zéro, encapsule le tout dans un nœud et l'ajoute à la scène globale.
+ * @return int Retourne 0 en cas de succès.
+ */
 int add_new_rectangle(void){
     rectangle_s *r = malloc(sizeof(rectangle_s));
     r->origin = malloc(sizeof(point));
@@ -130,7 +178,13 @@ int add_new_rectangle(void){
     return 0;
 }
 
-// Fonction pour créer les carré
+/**
+ * @brief Crée et ajoute un nouveau carré à la scène.
+ * @details Alloue dynamiquement une structure de carré, demande son point d'origine, 
+ *          ses couleurs de bordure et de fond, ainsi que la largeur de ses côtés. 
+ *          Initialise les transformations à zéro, puis insère le nœud dans la scène.
+ * @return int Retourne 0 en cas de succès.
+ */
 int add_new_square(void){
     square_s *s = malloc(sizeof(square_s));
     s->origin = malloc(sizeof(point));
@@ -154,7 +208,13 @@ int add_new_square(void){
     return 0;
 }
 
-// Fonction pour créer les ellipse
+/**
+ * @brief Crée et ajoute une nouvelle ellipse à la scène.
+ * @details Alloue dynamiquement une structure d'ellipse, récupère le point central, 
+ *          les rayons horizontal et vertical, ainsi que les couleurs de bordure et de fond. 
+ *          Initialise les transformations à zéro et ajoute la forme à la scène.
+ * @return int Retourne 0 en cas de succès.
+ */
 int add_new_ellipse(void){
     ellipse_s *e = malloc(sizeof(ellipse_s));
     e->center = malloc(sizeof(point));
@@ -180,7 +240,13 @@ int add_new_ellipse(void){
     return 0;
 }
 
-// Fonction pour créer les cercles
+/**
+ * @brief Crée et ajoute un nouveau cercle à la scène.
+ * @details Alloue dynamiquement une structure de cercle, demande son centre, son rayon, 
+ *          ses couleurs de bordure et de fond. Initialise les transformations à zéro 
+ *          et ajoute le cercle à la scène globale.
+ * @return int Retourne 0 en cas de succès.
+ */
 int add_new_circle(void){
     circle_s *c = malloc(sizeof(circle_s));
     c->center = malloc(sizeof(point));
@@ -204,7 +270,13 @@ int add_new_circle(void){
     return 0;
 }
 
-// Fonction pour créer les lignes
+/**
+ * @brief Crée et ajoute une nouvelle ligne simple à la scène.
+ * @details Alloue dynamiquement une structure de ligne, demande les coordonnées 
+ *          des deux points d'extrémité (A et B) ainsi que sa couleur. 
+ *          Initialise les transformations à zéro et l'ajoute à la scène.
+ * @return int Retourne 0 en cas de succès.
+ */
 int add_new_line(void){
     line_s *l = malloc(sizeof(line_s));
     l->a = malloc(sizeof(point));
@@ -227,7 +299,13 @@ int add_new_line(void){
     return 0;
 }
 
-// Fonction pour créé les multi ligne
+/**
+ * @brief Crée et ajoute une ligne brisée (multi-ligne) à la scène.
+ * @details Demande le nombre de points requis (minimum 3), alloue dynamiquement 
+ *          une liste chaînée de points pour les stocker, puis demande la couleur 
+ *          de la multi-ligne avant de l'insérer dans la scène.
+ * @return int Retourne 0 en cas de succès.
+ */
 int add_new_multi_line(void){
     multi_line_s *ml=malloc(sizeof(multi_line_s));
     ml->nb_points=add_nb_points(3);
@@ -259,7 +337,13 @@ int add_new_multi_line(void){
     return 0;
 }
 
-// Fonction pour créé les multi ligne
+/**
+ * @brief Crée et ajoute un nouveau polygone fermé à la scène.
+ * @details Demande le nombre de sommets (minimum 3), construit dynamiquement 
+ *          la liste chaînée des points correspondants, puis récupère les couleurs 
+ *          de bordure et de fond avant d'ajouter le polygone à la scène.
+ * @return int Retourne 0 en cas de succès.
+ */
 int add_new_polygone(void){
     polygone_s *p=malloc(sizeof(polygone_s));
     p->nb_points=add_nb_points(3);
@@ -294,7 +378,15 @@ int add_new_polygone(void){
     return 0;
 }
 
-// Fonction pour créer un Path (chemin)
+/**
+ * @brief Crée et ajoute un chemin complexe (Path SVG) à la scène.
+ * @details Alloue dynamiquement une structure de path, initialise ses couleurs, 
+ *          ses transformations à zéro et sa liste de commandes vide. Entre ensuite 
+ *          dans une boucle interactive permettant à l'utilisateur d'ajouter 
+ *          successivement des commandes de tracé (MoveTo, LineTo, CurveTo, Close) 
+ *          jusqu'à la fin de la saisie, puis ajoute le path à la scène.
+ * @return int Retourne 0 en cas de succès.
+ */
 int add_new_path(void){
     path_s *p = malloc(sizeof(path_s));
     printf("Couleur de la bordure :\n");
@@ -379,7 +471,15 @@ int add_new_path(void){
     return 0;
 }
 
-// Fonction pour créer un Groupe
+/**
+ * @brief Crée et ajoute un groupe de figures à la scène.
+ * @details Alloue dynamiquement une structure de groupe, sauvegarde temporairement 
+ *          la scène principale, puis redirige l'utilisateur vers le menu de création 
+ *          pour ajouter les figures qui composeront ce groupe. Une fois terminé, 
+ *          les enfants sont rattachés au groupe, la scène principale est restaurée, 
+ *          et le groupe est inséré dans la scène globale.
+ * @return int Retourne 0 en cas de succès.
+ */
 int add_new_group(void){
     group_s *g = malloc(sizeof(group_s));
     g->translate_x = 0;
@@ -413,11 +513,17 @@ int add_new_group(void){
     return 0;
 }
 
-//fonction principal
+/**
+ * @brief Fonction principale de sélection et de création de formes.
+ * @details Affiche un menu interactif en boucle permettant à l'utilisateur 
+ *          de choisir quel type de figure (ligne, cercle, ellipse, carré, rectangle, 
+ *          multi-ligne, polygone, path, groupe) il souhaite créer et ajouter 
+ *          à la scène courante, jusqu'à ce qu'il choisisse de quitter.
+ * @return int Retourne 0 lorsque l'utilisateur sort du menu.
+ */
 int add_new_form(void){
     unsigned char choice;
     bool boucle = true;
-    //creation des forme
     while(boucle){
         printf("\nChoix des formes :\n");
         printf("=> 0 - Quittez\n");
