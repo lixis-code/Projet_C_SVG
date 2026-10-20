@@ -118,6 +118,7 @@ int add_new_point(point *p){
         //vide le buffer d entrer
         clear_stdin();
     }while(verif !=1 || p->x<-250 || p->x>250);
+    verif=0;
     do{
         printf("Entrer l'ordonnée du point (entier compris entre -250 et 250)\n");
         verif=scanf("%d",&p->y);

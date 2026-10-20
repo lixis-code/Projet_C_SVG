@@ -3,9 +3,6 @@
  * @author Vayssiere Alexis
  * @date 2026-10-15
  * @brief Gestion de toutes les modifications du projet courant.
- * @details Contient l'ensemble des fonctions permettant de lister, modifier, 
- *          déplacer (translation), pivoter (rotation) ou supprimer les formes 
- *          et leurs éléments constitutifs (points, couleurs, commandes de path, groupes).
  */
 #include "projet_svg.h"
 
@@ -505,41 +502,32 @@ void prompt_path_command_data(path_command_node_t *cmd) {
     switch (cmd_choice) {
         case '1':
             cmd->type = MOVETO;
-            printf("Point d'arrivée :\n");
-            add_new_point(&cmd->p);
+            edit_point(&cmd->p, "Point d'arrivée :\n");
             break;
         case '2':
             cmd->type = LINETO;
-            printf("Point d'arrivée :\n");
-            add_new_point(&cmd->p);
+            edit_point(&cmd->p, "Point d'arrivée :\n");
             break;
         case '3':
             cmd->type = CURVETO;
-            printf("Premier point de contrôle (ctrl1) :\n");
-            add_new_point(&cmd->ctrl1);
-            printf("Second point de contrôle (ctrl2) :\n");
-            add_new_point(&cmd->ctrl2);
-            printf("Point d'arrivée :\n");
-            add_new_point(&cmd->p);
+            edit_point(&cmd->ctrl1, "Premier point de contrôle (ctrl1) :\n");
+            edit_point(&cmd->ctrl2, "Second point de contrôle (ctrl2) :\n");
+            edit_point(&cmd->p, "Point d'arrivée :\n");
             break;
         case '4':
             cmd->type = SMOOTH_CURVE;
-            printf("Second point de contrôle (ctrl2) :\n");
-            add_new_point(&cmd->ctrl2);
-            printf("Point d'arrivée :\n");
-            add_new_point(&cmd->p);
+            edit_point(&cmd->ctrl2, "Second point de contrôle (ctrl2) :\n");
+            edit_point(&cmd->p, "Point d'arrivée :\n");
             break;
         case '5':
             cmd->type = QUAD;
-            printf("Point de contrôle (ctrl1) :\n");
+            edit_point(&cmd->ctrl1, "Premier point de contrôle (ctrl1) :\n");
             add_new_point(&cmd->ctrl1);
-            printf("Point d'arrivée :\n");
-            add_new_point(&cmd->p);
+            edit_point(&cmd->p, "Point d'arrivée :\n");
             break;
         case '6':
             cmd->type = SMOOTH_QUAD;
-            printf("Point d'arrivée :\n");
-            add_new_point(&cmd->p);
+            edit_point(&cmd->p, "Point d'arrivée :\n");
             break;
         case '7':
             cmd->type = CLOSE;
@@ -549,8 +537,7 @@ void prompt_path_command_data(path_command_node_t *cmd) {
         default:
             printf("Choix invalide. Par défaut défini sur LineTo (L).\n");
             cmd->type = LINETO;
-            printf("Point d'arrivée :\n");
-            add_new_point(&cmd->p);
+            edit_point(&cmd->p, "Point d'arrivée :\n");
             break;
     }
 }
@@ -757,7 +744,6 @@ int edit_path(node_t *current, int index){
  * @brief Permet d'éditer les figures enfants contenues à l'intérieur d'un groupe.
  * @details Sauvegarde temporairement la scène globale, bascule sur la liste 
  *          des enfants du groupe, appelle `edit_form()`, puis restaure la scène.
- * 
  * @param[in,out] current Pointeur vers le nœud contenant le groupe.
  * @param[in] index Position du groupe dans la scène.
  * @return int Retourne 0 en cas de succès.
@@ -1077,7 +1063,6 @@ void print_group(node_t *current, int i){
  * @details Affiche la liste de toutes les formes enregistrées, demande à l'utilisateur 
  *          laquelle il souhaite sélectionner, puis propose les actions disponibles 
  *          (modifier, translater, pivoter, supprimer).
- * 
  * @return int Retourne 0 en cas de succès, -1 en cas d'erreur.
  */
 int edit_form(void) {

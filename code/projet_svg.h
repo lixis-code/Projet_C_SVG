@@ -6,11 +6,10 @@
  * @details Contient toutes les bibliothèques, énumérations, structures de données 
  *          et prototypes de fonctions nécessaires à la gestion et au rendu des formes SVG.
  */
-
 #ifndef PROJET_SVG
     #define PROJET_SVG
 
-    // Bibliothèques 
+    // --- Bibliothèques ---
     #include <stdlib.h>
     #include <stdio.h>
     #include <stdbool.h>
@@ -48,7 +47,7 @@
     // --- Structures ---
 
     /**
-     * @brief Représente un point en coordonnées 2D (pixels).
+     * @brief Représente un point en coordonnées 2D.
      */
     typedef struct point_t {
         int x; /**< Coordonnée horizontale */
