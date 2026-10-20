@@ -6,7 +6,11 @@
  */
 #include "projet_svg.h"
 
-// Fonction utilitaire pour vérifier si un fichier existe déjà
+/**
+ * @brief Vérifie si un fichier existe déjà sur le disque.
+ * @param[in] filepath Chemin complet du fichier à tester.
+ * @return int Retourne 1 si le fichier existe, 0 s'il n'existe pas.
+ */
 int file_exists(const char *filepath) {
     FILE *file = fopen(filepath, "r");
     if (file != NULL) {
@@ -16,7 +20,14 @@ int file_exists(const char *filepath) {
     return 0; // Le fichier n'existe pas
 }
 
-// Fonction pour demander un nom de fichier unique et ajouter automatiquement .svcp
+/**
+ * @brief Demande un nom de fichier unique à l'utilisateur et ajoute l'extension `.svcp`.
+ * @details Invite l'utilisateur à saisir un nom, vérifie l'unicité du fichier 
+ *          dans le dossier de sauvegarde, et boucle tant que le nom existe déjà.
+ * 
+ * @param[out] filepath_out Pointeur vers le buffer de destination pour le chemin complet.
+ * @param[in] max_size Taille maximale du buffer de sortie.
+ */
 void get_unique_save_filepath(char *filepath_out, size_t max_size) {
     char filename[128];
 
@@ -40,7 +51,11 @@ void get_unique_save_filepath(char *filepath_out, size_t max_size) {
     }
 }
 
-// Fonction pour compter récursivement le nombre total de figures principales de la scène
+/**
+ * @brief Compte récursivement le nombre total de figures principales de la scène.
+ * @param[in] head Pointeur vers le premier nœud de la scène.
+ * @return int Le nombre total de figures.
+ */
 int count_scene_nodes(node_t *head) {
     int count = 0;
     node_t *curr = head;
@@ -51,7 +66,11 @@ int count_scene_nodes(node_t *head) {
     return count;
 }
 
-// Sauvegarde de la liste des points (pour Multi-ligne et Polygone)
+/**
+ * @brief Sauvegarde une liste chaînée de points dans le fichier de sauvegarde.
+ * @param[out] file Pointeur vers le fichier de sauvegarde ouvert en écriture.
+ * @param[in] pt_curr Pointeur vers le premier point de la liste (multi-ligne ou polygone).
+ */
 void save_points_list(FILE *file, point_node_t *pt_curr) {
     point_node_t *curr = pt_curr;
     while (curr != NULL) {
@@ -60,7 +79,11 @@ void save_points_list(FILE *file, point_node_t *pt_curr) {
     }
 }
 
-// Sauvegarde de la liste des commandes d'un Path
+/**
+ * @brief Sauvegarde la liste des commandes d'un Path dans le fichier.
+ * @param[out] file Pointeur vers le fichier de sauvegarde ouvert en écriture.
+ * @param[in] cmd_curr Pointeur vers la première commande du path.
+ */
 void save_path_commands_list(FILE *file, path_command_node_t *cmd_curr) {
     path_command_node_t *curr = cmd_curr;
     while (curr != NULL) {
@@ -99,6 +122,11 @@ void save_path_commands_list(FILE *file, path_command_node_t *cmd_curr) {
     }
 }
 
+/**
+ * @brief Sérialise et écrit les données d'une ligne dans le fichier.
+ * @param[out] file Pointeur vers le fichier de sauvegarde.
+ * @param[in] current Pointeur vers le nœud contenant la ligne.
+ */
 void save_line(FILE *file, node_t *current){
     fprintf(file, "L %d,%d %d,%d %s %d %d %d\n",
         current->fig.line->a->x, current->fig.line->a->y,
@@ -107,6 +135,11 @@ void save_line(FILE *file, node_t *current){
         current->fig.line->translate_x, current->fig.line->translate_y,
         current->fig.line->rotate);
 }
+/**
+ * @brief Sérialise et écrit les données d'un cercle dans le fichier.
+ * @param[out] file Pointeur vers le fichier de sauvegarde.
+ * @param[in] current Pointeur vers le nœud contenant le cercle.
+ */
 void save_circle(FILE *file, node_t *current){
     fprintf(file, "C %d,%d %d %s %s %d %d %d\n",
         current->fig.circle->center->x, current->fig.circle->center->y,
@@ -115,6 +148,11 @@ void save_circle(FILE *file, node_t *current){
         current->fig.circle->translate_x, current->fig.circle->translate_y,
         current->fig.circle->rotate);
 }
+/**
+ * @brief Sérialise et écrit les données d'une ellipse dans le fichier.
+ * @param[out] file Pointeur vers le fichier de sauvegarde.
+ * @param[in] current Pointeur vers le nœud contenant l'ellipse.
+ */
 void save_ellipse(FILE *file, node_t *current){
     fprintf(file, "E %d,%d %d %d %s %s %d %d %d\n",
         current->fig.ellipse->center->x, current->fig.ellipse->center->y,
@@ -123,6 +161,11 @@ void save_ellipse(FILE *file, node_t *current){
         current->fig.ellipse->translate_x, current->fig.ellipse->translate_y,
         current->fig.ellipse->rotate);
 }
+/**
+ * @brief Sérialise et écrit les données d'un carré dans le fichier.
+ * @param[out] file Pointeur vers le fichier de sauvegarde.
+ * @param[in] current Pointeur vers le nœud contenant le carré.
+ */
 void save_square(FILE *file, node_t *current){
     fprintf(file, "S %d,%d %d %s %s %d %d %d\n",
         current->fig.square->origin->x, current->fig.square->origin->y,
@@ -131,6 +174,11 @@ void save_square(FILE *file, node_t *current){
         current->fig.square->translate_x, current->fig.square->translate_y,
         current->fig.square->rotate);
 }
+/**
+ * @brief Sérialise et écrit les données d'un rectangle dans le fichier.
+ * @param[out] file Pointeur vers le fichier de sauvegarde.
+ * @param[in] current Pointeur vers le nœud contenant le rectangle.
+ */
 void save_rectangle(FILE *file, node_t *current){
     fprintf(file, "R %d,%d %d %d %s %s %d %d %d\n",
         current->fig.rectangle->origin->x, current->fig.rectangle->origin->y,
@@ -139,6 +187,11 @@ void save_rectangle(FILE *file, node_t *current){
         current->fig.rectangle->translate_x, current->fig.rectangle->translate_y,
         current->fig.rectangle->rotate);
 }
+/**
+ * @brief Sérialise et écrit les données d'une multi-ligne (polyline) dans le fichier.
+ * @param[out] file Pointeur vers le fichier de sauvegarde.
+ * @param[in] current Pointeur vers le nœud contenant la multi-ligne.
+ */
 void save_multi_line(FILE *file, node_t *current){
     int nb_pts = 0;
     point_node_t *p_curr = current->fig.multi_line->point_head;
@@ -151,6 +204,11 @@ void save_multi_line(FILE *file, node_t *current){
         current->fig.multi_line->translate_x, current->fig.multi_line->translate_y,
         current->fig.multi_line->rotate);
 }
+/**
+ * @brief Sérialise et écrit les données d'un polygone dans le fichier.
+ * @param[out] file Pointeur vers le fichier de sauvegarde.
+ * @param[in] current Pointeur vers le nœud contenant le polygone.
+ */
 void save_polygone(FILE *file, node_t *current){
     int nb_pts = 0;
     point_node_t *p_curr = current->fig.polygone->point_head;
@@ -163,6 +221,11 @@ void save_polygone(FILE *file, node_t *current){
         current->fig.polygone->translate_x, current->fig.polygone->translate_y,
         current->fig.polygone->rotate);
 }
+/**
+ * @brief Sérialise et écrit les données d'un path et de ses commandes dans le fichier.
+ * @param[out] file Pointeur vers le fichier de sauvegarde.
+ * @param[in] current Pointeur vers le nœud contenant le path.
+ */
 void save_path(FILE *file, node_t *current){
     fprintf(file, "W %s %s %d %d %d %d\n",
         current->fig.path->color_border, current->fig.path->color,
@@ -171,7 +234,13 @@ void save_path(FILE *file, node_t *current){
         current->fig.path->nb_commands);
     save_path_commands_list(file, current->fig.path->commands_head);
 }
-void save_figure_to_file(FILE *file, node_t *current);//defini a l avanc pour la compilation
+// Déclaration anticipée pour la compilation croisée
+void save_figure_to_file(FILE *file, node_t *current);
+/**
+ * @brief Sérialise et écrit les données d'un groupe et de ses figures enfants de manière récursive.
+ * @param[out] file Pointeur vers le fichier de sauvegarde.
+ * @param[in] current Pointeur vers le nœud contenant le groupe.
+ */
 void save_group(FILE *file, node_t *current){
     int nb_children = 0;
     node_t *child = current->fig.group->children_head;
@@ -190,7 +259,11 @@ void save_group(FILE *file, node_t *current){
     }
 }
 
-// Fonction récursive pour sauvegarder une figure et ses enfants (si c'est un groupe)
+/**
+ * @brief Fonction de routage générique pour sauvegarder une figure selon son type.
+ * @param[out] file Pointeur vers le fichier de sauvegarde.
+ * @param[in] current Pointeur vers le nœud de la figure à sérialiser.
+ */
 void save_figure_to_file(FILE *file, node_t *current) {
     if (current == NULL) return;
 
@@ -227,7 +300,12 @@ void save_figure_to_file(FILE *file, node_t *current) {
     }
 }
 
-// Fonction principale de sauvegarde du projet
+/**
+ * @brief Fonction principale de sauvegarde du projet courant.
+ * @details Demande le nom du fichier à l'utilisateur, crée le fichier de sauvegarde, 
+ *          écrit l'en-tête global du fichier (version et nombre de nœuds principaux), 
+ *          puis parcourt la scène pour sauvegarder l'intégralité des figures.
+ */
 void save_project(void) {
     char filepath[256];
     

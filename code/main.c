@@ -48,3 +48,4 @@ int main(void){
         }
     }
 }//ajouter des system("clear") avant chaque affichage pour un meilleur rendu + le styliser 
+//ajouter la possibiliter d inverser celui l axe x et y (miroire) par calcul de point pour un resultat plus propre
