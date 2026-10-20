@@ -47,4 +47,4 @@ int main(void){
             break;
         }
     }
-}
+}//ajouter des system("clear") avant chaque affichage pour un meilleur rendu + le styliser 

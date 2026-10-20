@@ -45,28 +45,28 @@ void print_path_commands_list(path_command_node_t *cmd_curr, char *buffer, size_
         char cmd_str[64];
         switch (cmd_curr->type) {
             case MOVETO:
-                sprintf(cmd_str, "M %d %d ", cmd_curr->p.x, cmd_curr->p.y);
+                sprintf(cmd_str, "m %d %d ", cmd_curr->p.x, cmd_curr->p.y);
                 break;
             case LINETO:
-                sprintf(cmd_str, "L %d %d ", cmd_curr->p.x, cmd_curr->p.y);
+                sprintf(cmd_str, "l %d %d ", cmd_curr->p.x, cmd_curr->p.y);
                 break;
             case CURVETO:
-                sprintf(cmd_str, "C %d %d, %d %d, %d %d ", 
+                sprintf(cmd_str, "c %d %d, %d %d, %d %d ", 
                         cmd_curr->ctrl1.x, cmd_curr->ctrl1.y,
                         cmd_curr->ctrl2.x, cmd_curr->ctrl2.y,
                         cmd_curr->p.x, cmd_curr->p.y);
                 break;
             case SMOOTH_CURVE:
-                sprintf(cmd_str, "S %d %d, %d %d ", cmd_curr->ctrl2.x, cmd_curr->ctrl2.y, cmd_curr->p.x, cmd_curr->p.y);
+                sprintf(cmd_str, "s %d %d, %d %d ", cmd_curr->ctrl2.x, cmd_curr->ctrl2.y, cmd_curr->p.x, cmd_curr->p.y);
                 break;
             case QUAD:
-                sprintf(cmd_str, "Q %d %d, %d %d ", cmd_curr->ctrl1.x, cmd_curr->ctrl1.y, cmd_curr->p.x, cmd_curr->p.y);
+                sprintf(cmd_str, "q %d %d, %d %d ", cmd_curr->ctrl1.x, cmd_curr->ctrl1.y, cmd_curr->p.x, cmd_curr->p.y);
                 break;
             case SMOOTH_QUAD:
-                sprintf(cmd_str, "T %d %d ", cmd_curr->p.x, cmd_curr->p.y);
+                sprintf(cmd_str, "t %d %d ", cmd_curr->p.x, cmd_curr->p.y);
                 break;
             case CLOSE:
-                sprintf(cmd_str, "Z ");
+                sprintf(cmd_str, "z ");
                 break;
         }
         if (strlen(buffer) + strlen(cmd_str) < max_size) {

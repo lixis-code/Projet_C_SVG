@@ -34,7 +34,7 @@
     /**
      * @brief Types de commandes possibles pour un chemin (Path SVG : M, L, C, S, Q, T, Z).
      */
-    typedef enum {
+    typedef enum { 
         MOVETO,        /**< M - Déplacement vers un point */
         LINETO,        /**< L - Ligne droite vers un point */
         CURVETO,       /**< C - Courbe de Bézier cubique classique */
