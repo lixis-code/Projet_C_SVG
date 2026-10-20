@@ -34,7 +34,7 @@ int main(void){
             edit_form();
             break;
         case '3':
-            printf("pas encore implementer\n");
+            save_project();
             break;
         case '4':
             printf("pas encore implementer\n");

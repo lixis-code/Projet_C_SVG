@@ -241,5 +241,6 @@
     int edit_form(void);
     void save_scene_to_html(void);
     void free_scene(void);
+    void save_project(void);
 
 #endif
