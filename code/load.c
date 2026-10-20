@@ -16,7 +16,15 @@
 // Variable globale pour le fichier en cours
 char current_save_filepath[256] = "";
 
-// Fonction pour afficher et choisir une sauvegarde dans le dossier 'save/'
+/**
+ * @brief Affiche la liste des sauvegardes disponibles dans le dossier `save/` et permet d'en sélectionner une.
+ * @details Utilise les API spécifiques du système d'exploitation (Windows ou POSIX) 
+ *          pour parcourir le dossier de sauvegarde, filtre les fichiers ayant l'extension `.svcp`, 
+ *          les affiche numériquement, puis récupère le choix de l'utilisateur.
+ * @param[out] filepath_out Pointeur vers le buffer de destination pour stocker le chemin complet du fichier choisi.
+ * @param[in] max_size Taille maximale du buffer de sortie.
+ * @return int Retourne 1 en cas de sélection réussie, ou 0 en cas d'annulation ou d'erreur.
+ */
 int list_and_select_save_file(char *filepath_out, size_t max_size) {
     int file_count = 0;
     char filenames[50][256];
@@ -74,7 +82,12 @@ int list_and_select_save_file(char *filepath_out, size_t max_size) {
     return 1;
 }
 
-// Fonction de lecture de la liste de points (Multi-ligne / Polygone)
+/**
+ * @brief Lit et reconstruit une liste chaînée de points à partir du fichier de sauvegarde.
+ * @param[in,out] file Pointeur vers le fichier de sauvegarde ouvert en lecture.
+ * @param[in] nb_pts Nombre total de points à lire.
+ * @param[out] head_ref Pointeur vers la tête de la liste de points à initialiser.
+ */
 void load_points_list(FILE *file, int nb_pts, point_node_t **head_ref) {
     *head_ref = NULL;
     point_node_t *tail = NULL;
@@ -95,7 +108,12 @@ void load_points_list(FILE *file, int nb_pts, point_node_t **head_ref) {
     }
 }
 
-// Fonction de lecture des commandes d'un Path
+/**
+ * @brief Lit et reconstruit la liste chaînée des commandes d'un Path à partir du fichier.
+ * @param[in,out] file Pointeur vers le fichier de sauvegarde.
+ * @param[in] nb_cmds Nombre total de commandes à lire.
+ * @param[out] head_ref Pointeur vers la tête de la liste des commandes du path.
+ */
 void load_path_commands_list(FILE *file, int nb_cmds, path_command_node_t **head_ref) {
     *head_ref = NULL;
     path_command_node_t *tail = NULL;
@@ -156,8 +174,219 @@ void load_path_commands_list(FILE *file, int nb_cmds, path_command_node_t **head
     }
 }
 
-node_t* load_figure_from_file(FILE *file);
+/**
+ * @brief Charge et désérialise les données d'une ligne depuis le fichier de sauvegarde.
+ * @details Alloue la mémoire nécessaire pour la structure de la ligne, ses points d'extrémité 
+ *          et sa couleur, puis lit les valeurs correspondantes dans le flux du fichier.
+ * @param[in,out] file Pointeur vers le fichier de sauvegarde ouvert en lecture.
+ * @param[out] new_node Pointeur vers le nœud de figure préalloué à initialiser.
+ */
+void load_line(FILE *file, node_t *new_node){
+    new_node->type = LINE;
+    new_node->fig.line = malloc(sizeof(line_s));
+    new_node->fig.line->a = malloc(sizeof(point));
+    new_node->fig.line->b = malloc(sizeof(point));
+    new_node->fig.line->color = malloc(6*sizeof(char));
+    
+    fscanf(file, "%d,%d %d,%d %s %d %d %d",
+        &new_node->fig.line->a->x, &new_node->fig.line->a->y,
+        &new_node->fig.line->b->x, &new_node->fig.line->b->y,
+        new_node->fig.line->color,
+        &new_node->fig.line->translate_x, &new_node->fig.line->translate_y,
+        &new_node->fig.line->rotate);
+}
+/**
+ * @brief Charge et désérialise les données d'un cercle depuis le fichier de sauvegarde.
+ * @details Alloue la mémoire pour le cercle, son centre, ses couleurs de bordure et de fond, 
+ *          puis lit les paramètres et transformations depuis le fichier.
+ * @param[in,out] file Pointeur vers le fichier de sauvegarde.
+ * @param[out] new_node Pointeur vers le nœud de figure à initialiser.
+ */
+void load_circle(FILE *file, node_t *new_node){
+    new_node->type = CIRCLE;
+    new_node->fig.circle = malloc(sizeof(circle_s));
+    new_node->fig.circle->center = malloc(sizeof(point));
+    new_node->fig.circle->color = malloc(6*sizeof(char));
+    new_node->fig.circle->color_border = malloc(6*sizeof(char));
 
+    fscanf(file, "%d,%d %d %s %s %d %d %d",
+        &new_node->fig.circle->center->x, &new_node->fig.circle->center->y,
+        &new_node->fig.circle->radius,
+        new_node->fig.circle->color_border, new_node->fig.circle->color,
+        &new_node->fig.circle->translate_x, &new_node->fig.circle->translate_y,
+        &new_node->fig.circle->rotate);
+}
+/**
+ * @brief Charge et désérialise les données d'une ellipse depuis le fichier de sauvegarde.
+ * @details Alloue la mémoire pour l'ellipse, son centre, ses rayons x et y, ses couleurs, 
+ *          puis lit les valeurs enregistrées.
+ * @param[in,out] file Pointeur vers le fichier de sauvegarde.
+ * @param[out] new_node Pointeur vers le nœud de figure à initialiser.
+ */
+void load_ellipse(FILE *file, node_t *new_node){
+    new_node->type = ELLIPSE;
+    new_node->fig.ellipse = malloc(sizeof(ellipse_s));
+    new_node->fig.ellipse->center = malloc(sizeof(point));
+    new_node->fig.ellipse->color = malloc(6*sizeof(char));
+    new_node->fig.ellipse->color_border = malloc(6*sizeof(char));
+
+    fscanf(file, "%d,%d %d %d %s %s %d %d %d",
+        &new_node->fig.ellipse->center->x, &new_node->fig.ellipse->center->y,
+        &new_node->fig.ellipse->radius_x, &new_node->fig.ellipse->radius_y,
+        new_node->fig.ellipse->color_border, new_node->fig.ellipse->color,
+        &new_node->fig.ellipse->translate_x, &new_node->fig.ellipse->translate_y,
+        &new_node->fig.ellipse->rotate);
+}
+/**
+ * @brief Charge et désérialise les données d'un carré depuis le fichier de sauvegarde.
+ * @details Alloue la mémoire pour le carré, son origine, ses couleurs et ses dimensions, 
+ *          puis lit les données associées.
+ * @param[in,out] file Pointeur vers le fichier de sauvegarde.
+ * @param[out] new_node Pointeur vers le nœud de figure à initialiser.
+ */
+void load_square(FILE *file, node_t *new_node){
+    new_node->type = SQUARE;
+    new_node->fig.square = malloc(sizeof(square_s));
+    new_node->fig.square->origin = malloc(sizeof(point));
+    new_node->fig.square->color = malloc(6*sizeof(char));
+    new_node->fig.square->color_border = malloc(6*sizeof(char));
+
+    fscanf(file, "%d,%d %d %s %s %d %d %d",
+        &new_node->fig.square->origin->x, &new_node->fig.square->origin->y,
+        &new_node->fig.square->widht,
+        new_node->fig.square->color_border, new_node->fig.square->color,
+        &new_node->fig.square->translate_x, &new_node->fig.square->translate_y,
+        &new_node->fig.square->rotate);
+}
+/**
+ * @brief Charge et désérialise les données d'un rectangle depuis le fichier de sauvegarde.
+ * @details Alloue la mémoire pour le rectangle, son origine, sa largeur, sa hauteur, 
+ *          ses couleurs et ses transformations.
+ * @param[in,out] file Pointeur vers le fichier de sauvegarde.
+ * @param[out] new_node Pointeur vers le nœud de figure à initialiser.
+ */
+void load_rectangle(FILE *file, node_t *new_node){
+    new_node->type = RECTANGLE;
+    new_node->fig.rectangle = malloc(sizeof(rectangle_s));
+    new_node->fig.rectangle->origin = malloc(sizeof(point));
+    new_node->fig.rectangle->color = malloc(6*sizeof(char));
+    new_node->fig.rectangle->color_border = malloc(6*sizeof(char));
+
+    fscanf(file, "%d,%d %d %d %s %s %d %d %d",
+        &new_node->fig.rectangle->origin->x, &new_node->fig.rectangle->origin->y,
+        &new_node->fig.rectangle->widht, &new_node->fig.rectangle->height,
+        new_node->fig.rectangle->color_border, new_node->fig.rectangle->color,
+        &new_node->fig.rectangle->translate_x, &new_node->fig.rectangle->translate_y,
+        &new_node->fig.rectangle->rotate);
+}
+/**
+ * @brief Charge et désérialise une ligne brisée (multi-ligne) depuis le fichier.
+ * @details Alloue la mémoire pour la structure, lit le nombre de points, 
+ *          reconstruit la liste chaînée de points via `load_points_list()`, 
+ *          puis récupère la couleur et les transformations.
+ * @param[in,out] file Pointeur vers le fichier de sauvegarde.
+ * @param[out] new_node Pointeur vers le nœud de figure à initialiser.
+ */
+void load_multi_line(FILE *file, node_t *new_node){
+    new_node->type = MULTI_LINE;
+    new_node->fig.multi_line = malloc(sizeof(multi_line_s));
+    new_node->fig.multi_line->color = malloc(6*sizeof(char));
+    
+    int nb_pts;
+    fscanf(file, "%d", &nb_pts);
+    load_points_list(file, nb_pts, &new_node->fig.multi_line->point_head);
+    
+    fscanf(file, "%s %d %d %d",
+        new_node->fig.multi_line->color,
+        &new_node->fig.multi_line->translate_x, &new_node->fig.multi_line->translate_y,
+        &new_node->fig.multi_line->rotate);
+}
+/**
+ * @brief Charge et désérialise un polygone depuis le fichier de sauvegarde.
+ * @details Alloue la mémoire pour le polygone, lit le nombre de sommets, 
+ *          reconstruit la liste chaînée des points, puis charge les couleurs et transformations.
+ * @param[in,out] file Pointeur vers le fichier de sauvegarde.
+ * @param[out] new_node Pointeur vers le nœud de figure à initialiser.
+ */
+void load_polygone(FILE *file, node_t *new_node){
+    new_node->type = POLYGONE;
+    new_node->fig.polygone = malloc(sizeof(polygone_s));
+    new_node->fig.polygone->color = malloc(6*sizeof(char));
+    new_node->fig.polygone->color_border = malloc(6*sizeof(char));
+
+    int nb_pts;
+    fscanf(file, "%d", &nb_pts);
+    load_points_list(file, nb_pts, &new_node->fig.polygone->point_head);
+
+    fscanf(file, "%s %s %d %d %d",
+        new_node->fig.polygone->color_border, new_node->fig.polygone->color,
+        &new_node->fig.polygone->translate_x, &new_node->fig.polygone->translate_y,
+        &new_node->fig.polygone->rotate);
+}
+/**
+ * @brief Charge et désérialise un chemin complexe (path) depuis le fichier.
+ * @details Alloue la mémoire pour le path, lit ses propriétés globales et le nombre de commandes, 
+ *          puis charge la liste chaînée des commandes via `load_path_commands_list()`.
+ * @param[in,out] file Pointeur vers le fichier de sauvegarde.
+ * @param[out] new_node Pointeur vers le nœud de figure à initialiser.
+ */
+void load_path(FILE *file, node_t *new_node){
+    new_node->type = PATH;
+    new_node->fig.path = malloc(sizeof(path_s));
+    new_node->fig.path->color = malloc(6*sizeof(char));
+    new_node->fig.path->color_border = malloc(6*sizeof(char));
+
+    fscanf(file, "%s %s %d %d %d %d",
+        new_node->fig.path->color_border, new_node->fig.path->color,
+        &new_node->fig.path->translate_x, &new_node->fig.path->translate_y,
+        &new_node->fig.path->rotate,
+        &new_node->fig.path->nb_commands);
+
+    load_path_commands_list(file, new_node->fig.path->nb_commands, &new_node->fig.path->commands_head);
+}
+// Déclaration anticipée pour la compilation croisée
+node_t* load_figure_from_file(FILE *file);
+/**
+ * @brief Charge et désérialise récursivement un groupe et ses figures enfants depuis le fichier.
+ * @details Alloue la mémoire pour le groupe, lit ses transformations et le nombre d'enfants, 
+ *          puis boucle pour charger récursivement chaque figure enfant contenue dans le groupe.
+ * @param[in,out] file Pointeur vers le fichier de sauvegarde.
+ * @param[out] new_node Pointeur vers le nœud de groupe à initialiser.
+ */
+void load_group(FILE *file, node_t *new_node){
+    new_node->type = GROUP;
+    new_node->fig.group = malloc(sizeof(group_s));
+
+    int nb_children;
+    fscanf(file, "%d %d %d %d",
+        &new_node->fig.group->translate_x, &new_node->fig.group->translate_y,
+        &new_node->fig.group->rotate,
+        &nb_children);
+
+    new_node->fig.group->children_head = NULL;
+    node_t *child_tail = NULL;
+
+    for (int i = 0; i < nb_children; i++) {
+        node_t *child_node = load_figure_from_file(file);
+        if (child_node != NULL) {
+            if (new_node->fig.group->children_head == NULL) {
+                new_node->fig.group->children_head = child_node;
+            } else {
+                child_tail->next = child_node;
+            }
+            child_tail = child_node;
+        }
+    }
+}
+
+/**
+ * @brief Lit et charge dynamiquement une figure (ou un groupe) depuis le fichier de sauvegarde.
+ * @details Lit le caractère identifiant le type de figure, alloue la mémoire nécessaire, 
+ *          lit les paramètres spécifiques (coordonnées, couleurs, transformations, sous-éléments 
+ *          récursifs pour les groupes) et retourne un nœud prêt à être inséré dans la scène.
+ * @param[in,out] file Pointeur vers le fichier de sauvegarde.
+ * @return node_t* Pointeur vers le nouveau nœud de figure créé, ou NULL en cas d'erreur.
+ */
 node_t* load_figure_from_file(FILE *file) {
     char type;
     if (fscanf(file, " %c", &type) != 1) return NULL;
@@ -167,153 +396,33 @@ node_t* load_figure_from_file(FILE *file) {
     new_node->next = NULL;
 
     switch (type) {
-        case 'L': {
-            new_node->type = LINE;
-            new_node->fig.line = malloc(sizeof(line_s));
-            new_node->fig.line->a = malloc(sizeof(point));
-            new_node->fig.line->b = malloc(sizeof(point));
-            new_node->fig.line->color = malloc(6*sizeof(char));
-            
-            fscanf(file, "%d,%d %d,%d %s %d %d %d",
-                   &new_node->fig.line->a->x, &new_node->fig.line->a->y,
-                   &new_node->fig.line->b->x, &new_node->fig.line->b->y,
-                   new_node->fig.line->color,
-                   &new_node->fig.line->translate_x, &new_node->fig.line->translate_y,
-                   &new_node->fig.line->rotate);
+        case 'L': 
+            load_line(file, new_node);
             break;
-        }
-        case 'C': {
-            new_node->type = CIRCLE;
-            new_node->fig.circle = malloc(sizeof(circle_s));
-            new_node->fig.circle->center = malloc(sizeof(point));
-            new_node->fig.circle->color = malloc(6*sizeof(char));
-            new_node->fig.circle->color_border = malloc(6*sizeof(char));
-
-            fscanf(file, "%d,%d %d %s %s %d %d %d",
-                   &new_node->fig.circle->center->x, &new_node->fig.circle->center->y,
-                   &new_node->fig.circle->radius,
-                   new_node->fig.circle->color_border, new_node->fig.circle->color,
-                   &new_node->fig.circle->translate_x, &new_node->fig.circle->translate_y,
-                   &new_node->fig.circle->rotate);
+        case 'C': 
+            load_circle(file, new_node);
             break;
-        }
-        case 'E': {
-            new_node->type = ELLIPSE;
-            new_node->fig.ellipse = malloc(sizeof(ellipse_s));
-            new_node->fig.ellipse->center = malloc(sizeof(point));
-            new_node->fig.ellipse->color = malloc(6*sizeof(char));
-            new_node->fig.ellipse->color_border = malloc(6*sizeof(char));
-
-            fscanf(file, "%d,%d %d %d %s %s %d %d %d",
-                   &new_node->fig.ellipse->center->x, &new_node->fig.ellipse->center->y,
-                   &new_node->fig.ellipse->radius_x, &new_node->fig.ellipse->radius_y,
-                   new_node->fig.ellipse->color_border, new_node->fig.ellipse->color,
-                   &new_node->fig.ellipse->translate_x, &new_node->fig.ellipse->translate_y,
-                   &new_node->fig.ellipse->rotate);
+        case 'E': 
+            load_ellipse(file, new_node);
             break;
-        }
-        case 'S': {
-            new_node->type = SQUARE;
-            new_node->fig.square = malloc(sizeof(square_s));
-            new_node->fig.square->origin = malloc(sizeof(point));
-            new_node->fig.square->color = malloc(6*sizeof(char));
-            new_node->fig.square->color_border = malloc(6*sizeof(char));
-
-            fscanf(file, "%d,%d %d %s %s %d %d %d",
-                   &new_node->fig.square->origin->x, &new_node->fig.square->origin->y,
-                   &new_node->fig.square->widht,
-                   new_node->fig.square->color_border, new_node->fig.square->color,
-                   &new_node->fig.square->translate_x, &new_node->fig.square->translate_y,
-                   &new_node->fig.square->rotate);
+        case 'S': 
+            load_square(file, new_node);
             break;
-        }
-        case 'R': {
-            new_node->type = RECTANGLE;
-            new_node->fig.rectangle = malloc(sizeof(rectangle_s));
-            new_node->fig.rectangle->origin = malloc(sizeof(point));
-            new_node->fig.rectangle->color = malloc(6*sizeof(char));
-            new_node->fig.rectangle->color_border = malloc(6*sizeof(char));
-
-            fscanf(file, "%d,%d %d %d %s %s %d %d %d",
-                   &new_node->fig.rectangle->origin->x, &new_node->fig.rectangle->origin->y,
-                   &new_node->fig.rectangle->widht, &new_node->fig.rectangle->height,
-                   new_node->fig.rectangle->color_border, new_node->fig.rectangle->color,
-                   &new_node->fig.rectangle->translate_x, &new_node->fig.rectangle->translate_y,
-                   &new_node->fig.rectangle->rotate);
+        case 'R': 
+            load_rectangle(file, new_node);
             break;
-        }
-        case 'M': {
-            new_node->type = MULTI_LINE;
-            new_node->fig.multi_line = malloc(sizeof(multi_line_s));
-            new_node->fig.multi_line->color = malloc(6*sizeof(char));
-            
-            int nb_pts;
-            fscanf(file, "%d", &nb_pts);
-            load_points_list(file, nb_pts, &new_node->fig.multi_line->point_head);
-            
-            fscanf(file, "%s %d %d %d",
-                   new_node->fig.multi_line->color,
-                   &new_node->fig.multi_line->translate_x, &new_node->fig.multi_line->translate_y,
-                   &new_node->fig.multi_line->rotate);
+        case 'M': 
+            load_multi_line(file, new_node);
             break;
-        }
-        case 'P': {
-            new_node->type = POLYGONE;
-            new_node->fig.polygone = malloc(sizeof(polygone_s));
-            new_node->fig.polygone->color = malloc(6*sizeof(char));
-            new_node->fig.polygone->color_border = malloc(6*sizeof(char));
-
-            int nb_pts;
-            fscanf(file, "%d", &nb_pts);
-            load_points_list(file, nb_pts, &new_node->fig.polygone->point_head);
-
-            fscanf(file, "%s %s %d %d %d",
-                   new_node->fig.polygone->color_border, new_node->fig.polygone->color,
-                   &new_node->fig.polygone->translate_x, &new_node->fig.polygone->translate_y,
-                   &new_node->fig.polygone->rotate);
+        case 'P': 
+            load_polygone(file, new_node);
             break;
-        }
-        case 'W': {
-            new_node->type = PATH;
-            new_node->fig.path = malloc(sizeof(path_s));
-            new_node->fig.path->color = malloc(6*sizeof(char));
-            new_node->fig.path->color_border = malloc(6*sizeof(char));
-
-            fscanf(file, "%s %s %d %d %d %d",
-                   new_node->fig.path->color_border, new_node->fig.path->color,
-                   &new_node->fig.path->translate_x, &new_node->fig.path->translate_y,
-                   &new_node->fig.path->rotate,
-                   &new_node->fig.path->nb_commands);
-
-            load_path_commands_list(file, new_node->fig.path->nb_commands, &new_node->fig.path->commands_head);
+        case 'W': 
+            load_path(file, new_node);
             break;
-        }
-        case 'G': {
-            new_node->type = GROUP;
-            new_node->fig.group = malloc(sizeof(group_s));
-
-            int nb_children;
-            fscanf(file, "%d %d %d %d",
-                   &new_node->fig.group->translate_x, &new_node->fig.group->translate_y,
-                   &new_node->fig.group->rotate,
-                   &nb_children);
-
-            new_node->fig.group->children_head = NULL;
-            node_t *child_tail = NULL;
-
-            for (int i = 0; i < nb_children; i++) {
-                node_t *child_node = load_figure_from_file(file);
-                if (child_node != NULL) {
-                    if (new_node->fig.group->children_head == NULL) {
-                        new_node->fig.group->children_head = child_node;
-                    } else {
-                        child_tail->next = child_node;
-                    }
-                    child_tail = child_node;
-                }
-            }
+        case 'G': 
+            load_group(file, new_node);
             break;
-        }
         default:
             free(new_node);
             return NULL;
@@ -321,6 +430,13 @@ node_t* load_figure_from_file(FILE *file) {
     return new_node;
 }
 
+/**
+ * @brief Fonction principale pour charger un projet depuis un fichier de sauvegarde.
+ * @details Appelle le sélecteur de fichiers, ouvre le fichier sélectionné en lecture, 
+ *          lit l'en-tête (version et nombre total de nœuds principaux), réinitialise 
+ *          la scène courante, charge chaque figure une par une pour les ajouter à la scène, 
+ *          puis met à jour le chemin de sauvegarde courant (`current_save_filepath`).
+ */
 void load_project(void) {
     char filepath[256];
 
