@@ -226,6 +226,8 @@
     // Déclaration de la scène globale
     extern Scene ma_scene;
 
+    extern char current_save_filepath[256]; // Stocke le nom du fichier actuellement ouvert/sauvegardé
+
     // --- Fonctions utilitaires communes ---
 
     char* add_color(void);
@@ -234,6 +236,7 @@
     int add_int(void);
     void free_figure(node_t *current);
     void print_figure_to_html(FILE *file, node_t *current);
+    void add_to_scene(node_t *node);
 
     // --- Fonctions principales des différents programmes ---
 
@@ -242,5 +245,6 @@
     void save_scene_to_html(void);
     void free_scene(void);
     void save_project(void);
+    void load_project(void);
 
 #endif

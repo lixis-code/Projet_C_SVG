@@ -301,29 +301,41 @@ void save_figure_to_file(FILE *file, node_t *current) {
 }
 
 /**
- * @brief Fonction principale de sauvegarde du projet courant.
- * @details Demande le nom du fichier à l'utilisateur, crée le fichier de sauvegarde, 
- *          écrit l'en-tête global du fichier (version et nombre de nœuds principaux), 
- *          puis parcourt la scène pour sauvegarder l'intégralité des figures.
+ * @brief Sauvegarde le projet courant dans un fichier (avec option d'écrasement ou nouveau nom).
+ * @details Vérifie si un chemin de sauvegarde est déjà associé au projet courant. 
+ *          Si oui, demande à l'utilisateur s'il souhaite écraser ce fichier existant 
+ *          ou en créer un nouveau. Sinon, demande directement un nouveau nom de fichier unique. 
+ *          Ouvre ensuite le fichier en écriture, écrit l'en-tête (version et nombre de figures), 
+ *          sérialise l'intégralité de la scène, met à jour le fichier courant et ferme le flux.
  */
 void save_project(void) {
     char filepath[256];
     
-    // 1. Demande du nom et vérification d'unicité
-    get_unique_save_filepath(filepath, sizeof(filepath));
+    // Si un fichier est déjà en cours (chargé ou sauvegardé précédemment)
+    if (current_save_filepath[0] != '\0') {
+        char choice;
+        printf("\nVoulez-vous ecraser le fichier actuel (%s) ? (o/n) : ", current_save_filepath);
+        scanf(" %c", &choice);
+        clear_stdin();
+        
+        if (choice == 'o' || choice == 'O') {
+            snprintf(filepath, sizeof(filepath), "%s", current_save_filepath);
+        } else {
+            get_unique_save_filepath(filepath, sizeof(filepath));
+        }
+    } else {
+        get_unique_save_filepath(filepath, sizeof(filepath));
+    }
 
-    // 2. Ouverture du fichier en écriture
     FILE *file = fopen(filepath, "w");
     if (file == NULL) {
         printf("Erreur critique : Impossible de creer le fichier de sauvegarde.\n");
         return;
     }
 
-    // 3. Écriture de l'en-tête (Version = 1, Nombre total de figures principales)
     int total_nodes = count_scene_nodes(ma_scene.head);
     fprintf(file, "1 %d\n", total_nodes);
 
-    // 4. Parcours et écriture de chaque figure de la scène
     node_t *current = ma_scene.head;
     while (current != NULL) {
         save_figure_to_file(file, current);
@@ -331,5 +343,8 @@ void save_project(void) {
     }
 
     fclose(file);
+    
+    // Mettre à jour le fichier courant
+    snprintf(current_save_filepath, sizeof(current_save_filepath), "%s", filepath);
     printf("Succes ! Projet sauvegarde dans : %s\n", filepath);
 }

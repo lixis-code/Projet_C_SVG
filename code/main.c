@@ -14,8 +14,8 @@ int main(void){
     printf("------------Projet C SVG------------\n");
     while(1){
         printf("\nListe des option :\n");
-        printf("=> 0 - Quittez\n");
-        printf("=> 1 - Creer un nouveau projet\n");
+        printf("=> 0 - Quittez\n"); //ajouter une option "nouveau projet" qui vide la memoire et demande si l utilisateur veut sauvegarder le projet courant si il a ete modifier depuis sa derniere sauvegarde
+        printf("=> 1 - Ajouter des formes\n");
         printf("=> 2 - Editer le projet\n");
         printf("=> 3 - Sauvegarder le projet\n");
         printf("=> 4 - Charger un projet\n");
@@ -37,7 +37,8 @@ int main(void){
             save_project();
             break;
         case '4':
-            printf("pas encore implementer\n");
+            free_scene();
+            load_project();
             break;
         case '5':
             save_scene_to_html();
