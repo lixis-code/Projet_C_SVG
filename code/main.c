@@ -49,7 +49,11 @@ int main(void){
         }
     }
 }
-//ajouter des system("clear") avant chaque affichage pour un meilleur rendu + le styliser 
-//ajouter une option "nouveau projet" qui vide la memoire et demande si l utilisateur veut sauvegarder le projet courant si il a ete modifier depuis sa derniere sauvegarde
-//ajouter une verif de sauvegarde pour que si elle est corompu, elle le signale et retourne une forme NULL
-//faire de l optimisation (et se renseigner au prealable sur les meilleur pratique)
+/*
+*   liste des modification a apporter : 
+*   1- ajouter des system("clear") avant chaque affichage pour un meilleur rendu + styliser l affichage
+*   2- ajouter une option "nouveau projet" qui vide la memoire et demande si l utilisateur veut sauvegarder le projet courant si il a ete modifier depuis sa derniere sauvegarde
+*   3- ajouter une verif de sauvegarde pour que si elle est corompu, elle le signale et retourne une forme NULL
+*   4- ajouter la possibiliter d inverser celon l axe x et y (miroire) pour les path et les groupes
+*   5- faire de l optimisation (et se renseigner au prealable sur les meilleur pratique)
+*/

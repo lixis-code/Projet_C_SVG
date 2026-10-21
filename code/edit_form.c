@@ -945,6 +945,13 @@ int delete(node_t *current, node_t *prev){
     return 0;
 }
 
+/**
+ * @brief Applique une symétrie (miroir) sur une ligne par rapport à un axe.
+ * @details Modifie les coordonnées des points d'extrémité (A et B) de la ligne 
+ *          selon l'axe spécifié ('x' ou 'y').
+ * @param[in,out] current Pointeur vers le nœud contenant la ligne.
+ * @param[in] axe L'axe de symétrie ('x' pour horizontal, 'y' pour vertical).
+ */
 void mirror_line(node_t *current, char axe){
     switch(axe){
         case 'x':
@@ -959,6 +966,12 @@ void mirror_line(node_t *current, char axe){
             break;
     }
 }
+/**
+ * @brief Applique une symétrie (miroir) sur un cercle par rapport à un axe.
+ * @details Inverse la coordonnée du centre du cercle selon l'axe choisi.
+ * @param[in,out] current Pointeur vers le nœud contenant le cercle.
+ * @param[in] axe L'axe de symétrie ('x' ou 'y').
+ */
 void mirror_circle(node_t *current, char axe){
     switch(axe){
         case 'x':
@@ -971,6 +984,12 @@ void mirror_circle(node_t *current, char axe){
             break;
     }
 }
+/**
+ * @brief Applique une symétrie (miroir) sur une ellipse par rapport à un axe.
+ * @details Inverse la coordonnée du centre de l'ellipse selon l'axe choisi.
+ * @param[in,out] current Pointeur vers le nœud contenant l'ellipse.
+ * @param[in] axe L'axe de symétrie ('x' ou 'y').
+ */
 void mirror_ellipse(node_t *current, char axe){
     switch(axe){
         case 'x':
@@ -983,6 +1002,13 @@ void mirror_ellipse(node_t *current, char axe){
             break;
     }
 }
+/**
+ * @brief Applique une symétrie (miroir) sur un carré par rapport à un axe.
+ * @details Met à jour l'origine du carré en tenant compte de sa largeur pour conserver 
+ *          un positionnement géométrique correct après inversion.
+ * @param[in,out] current Pointeur vers le nœud contenant le carré.
+ * @param[in] axe L'axe de symétrie ('x' ou 'y').
+ */
 void mirror_square(node_t *current, char axe){
     switch(axe){
         case 'x':
@@ -995,6 +1021,13 @@ void mirror_square(node_t *current, char axe){
             break;
     }
 }
+/**
+ * @brief Applique une symétrie (miroir) sur un rectangle par rapport à un axe.
+ * @details Met à jour l'origine du rectangle en tenant compte de ses dimensions 
+ *          (largeur et hauteur) pour conserver un positionnement correct après inversion.
+ * @param[in,out] current Pointeur vers le nœud contenant le rectangle.
+ * @param[in] axe L'axe de symétrie ('x' ou 'y').
+ */
 void mirror_rectangle(node_t *current, char axe){
     switch(axe){
         case 'x':
@@ -1007,6 +1040,13 @@ void mirror_rectangle(node_t *current, char axe){
             break;
     }
 }
+/**
+ * @brief Applique une symétrie (miroir) sur tous les points d'une ligne brisée (multi-ligne).
+ * @details Parcourt la liste chaînée des points et inverse leurs coordonnées Y (pour l'axe X) 
+ *          ou X (pour l'axe Y).
+ * @param[in,out] current Pointeur vers le nœud contenant la multi-ligne.
+ * @param[in] axe L'axe de symétrie ('x' ou 'y').
+ */
 void mirror_multi_line(node_t *current, char axe){
     if (current == NULL || current->fig.multi_line == NULL) return;
     point_node_t *curr_pt = current->fig.multi_line->point_head;
@@ -1029,7 +1069,12 @@ void mirror_multi_line(node_t *current, char axe){
             break;
     }
 }
-
+/**
+ * @brief Applique une symétrie (miroir) sur tous les sommets d'un polygone.
+ * @details Parcourt la liste chaînée des sommets et inverse leurs coordonnées selon l'axe choisi.
+ * @param[in,out] current Pointeur vers le nœud contenant le polygone.
+ * @param[in] axe L'axe de symétrie ('x' ou 'y').
+ */
 void mirror_polygone(node_t *current, char axe){
     if (current == NULL || current->fig.polygone == NULL) return;
     point_node_t *curr_pt = current->fig.polygone->point_head;
@@ -1053,6 +1098,10 @@ void mirror_polygone(node_t *current, char axe){
     }
 }
 
+/**
+ * @brief Route la symétrie par rapport à l'axe X selon le type de la figure.
+ * @param[in,out] current Pointeur vers le nœud de la figure à inverser.
+ */
 void mirror_x(node_t *current){
     switch (current->type){
     case LINE:
@@ -1086,6 +1135,11 @@ void mirror_x(node_t *current){
         break;
     }
 }
+
+/**
+ * @brief Route la symétrie par rapport à l'axe Y selon le type de la figure.
+ * @param[in,out] current Pointeur vers le nœud de la figure à inverser.
+ */
 void mirror_y(node_t *current){
     switch (current->type){
     case LINE:
@@ -1120,6 +1174,13 @@ void mirror_y(node_t *current){
     }
 }
 
+/**
+ * @brief Fonction principale interactive pour appliquer une symétrie à une figure.
+ * @details Affiche un menu permettant à l'utilisateur de choisir l'axe de réflexion 
+ *          (axe X, axe Y, ou les deux), puis déclenche la fonction correspondante.
+ * @param[in,out] current Pointeur vers le nœud de la figure à transformer.
+ * @return int Retourne 0 en cas de succès.
+ */
 int mirror(node_t *current){
     printf("\nChoix d'inversion :\n");
     printf("=> 1 : inverser par rapport a l'axe x\n");
@@ -1137,11 +1198,11 @@ int mirror(node_t *current){
         mirror_x(current);
         break;
     case 2: 
-        //mirror_y(current);
+        mirror_y(current);
         break;
     case 3:
         mirror_x(current);
-        //mirror_y(current);
+        mirror_y(current);
         break;
     default:
         printf("Unexpected error\n");
