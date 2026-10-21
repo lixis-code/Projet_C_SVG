@@ -945,6 +945,211 @@ int delete(node_t *current, node_t *prev){
     return 0;
 }
 
+void mirror_line(node_t *current, char axe){
+    switch(axe){
+        case 'x':
+            current->fig.line->a->y-=current->fig.line->a->y*2;
+            current->fig.line->b->y-=current->fig.line->b->y*2;
+            break;
+        case 'y':
+            current->fig.line->a->x-=current->fig.line->a->x*2;
+            current->fig.line->b->x-=current->fig.line->b->x*2;
+            break;
+        default:
+            break;
+    }
+}
+void mirror_circle(node_t *current, char axe){
+    switch(axe){
+        case 'x':
+            current->fig.circle->center->y-=current->fig.circle->center->y*2;
+            break;
+        case 'y':
+            current->fig.circle->center->x-=current->fig.circle->center->x*2;
+            break;
+        default:
+            break;
+    }
+}
+void mirror_ellipse(node_t *current, char axe){
+    switch(axe){
+        case 'x':
+            current->fig.ellipse->center->y-=current->fig.ellipse->center->y*2;
+            break;
+        case 'y':
+            current->fig.ellipse->center->x-=current->fig.ellipse->center->x*2;
+            break;
+        default:
+            break;
+    }
+}
+void mirror_square(node_t *current, char axe){
+    switch(axe){
+        case 'x':
+            current->fig.square->origin->y-=current->fig.square->origin->y*2+current->fig.square->widht;
+            break;
+        case 'y':
+            current->fig.square->origin->x-=current->fig.square->origin->x*2+current->fig.square->widht;
+            break;
+        default:
+            break;
+    }
+}
+void mirror_rectangle(node_t *current, char axe){
+    switch(axe){
+        case 'x':
+            current->fig.rectangle->origin->y-=current->fig.rectangle->origin->y*2+current->fig.rectangle->height;
+            break;
+        case 'y':
+            current->fig.rectangle->origin->x-=current->fig.rectangle->origin->x*2+current->fig.rectangle->widht;
+            break;
+        default:
+            break;
+    }
+}
+void mirror_multi_line(node_t *current, char axe){
+    if (current == NULL || current->fig.multi_line == NULL) return;
+    point_node_t *curr_pt = current->fig.multi_line->point_head;
+    switch(axe){
+        case 'x':
+            // Symétrie par rapport à l'axe X (les ordonnées Y sont inversées)
+            while (curr_pt != NULL) {
+                curr_pt->pt.y = -curr_pt->pt.y;
+                curr_pt = curr_pt->next;
+            }
+            break;
+        case 'y':
+            // Symétrie par rapport à l'axe Y (les abscisses X sont inversées)
+            while (curr_pt != NULL) {
+                curr_pt->pt.x = -curr_pt->pt.x;
+                curr_pt = curr_pt->next;
+            }
+            break;
+        default:
+            break;
+    }
+}
+
+void mirror_polygone(node_t *current, char axe){
+    if (current == NULL || current->fig.polygone == NULL) return;
+    point_node_t *curr_pt = current->fig.polygone->point_head;
+    switch(axe){
+        case 'x':
+            // Symétrie par rapport à l'axe X (les ordonnées Y sont inversées)
+            while (curr_pt != NULL) {
+                curr_pt->pt.y = -curr_pt->pt.y;
+                curr_pt = curr_pt->next;
+            }
+            break;
+        case 'y':
+            // Symétrie par rapport à l'axe Y (les abscisses X sont inversées)
+            while (curr_pt != NULL) {
+                curr_pt->pt.x = -curr_pt->pt.x;
+                curr_pt = curr_pt->next;
+            }
+            break;
+        default:
+            break;
+    }
+}
+
+void mirror_x(node_t *current){
+    switch (current->type){
+    case LINE:
+        mirror_line(current, 'x');
+        break;
+    case CIRCLE:
+        mirror_circle(current, 'x');
+        break;
+    case ELLIPSE:
+        mirror_ellipse(current, 'x');
+        break;
+    case SQUARE:
+        mirror_square(current, 'x');
+        break;
+    case RECTANGLE:
+        mirror_rectangle(current, 'x');
+        break;
+    case MULTI_LINE:
+        mirror_multi_line(current, 'x');
+        break;
+    case POLYGONE:
+        mirror_polygone(current, 'x');
+        break;
+    case PATH:
+        printf("Fonctionaliter non implementer\n");
+        break;
+    case GROUP:
+        printf("Fonctionaliter non implementer\n"); //for (tout les forme du groupe) mirror (recusrsif)
+        break;
+    default:
+        break;
+    }
+}
+void mirror_y(node_t *current){
+    switch (current->type){
+    case LINE:
+        mirror_line(current, 'y');
+        break;
+    case CIRCLE:
+        mirror_circle(current, 'y');
+        break;
+    case ELLIPSE:
+        mirror_ellipse(current, 'y');
+        break;
+    case SQUARE:
+        mirror_square(current, 'y');
+        break;
+    case RECTANGLE:
+        mirror_rectangle(current, 'y');
+        break;
+    case MULTI_LINE:
+        mirror_multi_line(current, 'y');
+        break;
+    case POLYGONE:
+        mirror_polygone(current, 'y');
+        break;
+    case PATH:
+        printf("Fonctionaliter non implementer\n");
+        break;
+    case GROUP:
+        printf("Fonctionaliter non implementer\n"); //for (tout les forme du groupe) mirror (recusrsif)
+        break;
+    default:
+        break;
+    }
+}
+
+int mirror(node_t *current){
+    printf("\nChoix d'inversion :\n");
+    printf("=> 1 : inverser par rapport a l'axe x\n");
+    printf("=> 2 : inverser par rapport a l'axe y\n");
+    printf("=> 3 : inverser par rapport aux axes x et y\n");
+    int verif;
+    unsigned int c;
+    do{
+        printf("\n");
+        verif=scanf("%d", &c);
+        clear_stdin();
+    }while(verif !=1 || c < 1 || c > 3);
+    switch (c){
+    case 1:
+        mirror_x(current);
+        break;
+    case 2: 
+        //mirror_y(current);
+        break;
+    case 3:
+        mirror_x(current);
+        //mirror_y(current);
+        break;
+    default:
+        printf("Unexpected error\n");
+        break;
+    }
+    return 0;
+}
+
 /**
  * @brief Affiche un résumé textuel d'une ligne dans la console.
  * @param[in] current Pointeur vers le nœud de la ligne.
@@ -1132,10 +1337,10 @@ int edit_form(void) {
     printf("\nActions disponibles pour la forme [%d] :\n", index);
     printf("=> 1 : Éditer les propriétés\n");
     printf("=> 2 : Déplacer (Translation)\n");
-    printf("=> 3 : Faire pivoter (Rotation)\n");
-    printf("=> 4 : Supprimer\n");
-    printf("=> 5 : Annuler\n");
-
+    printf("=> 3 : Inverser (Mirroire)\n");
+    printf("=> 4 : Faire pivoter (Rotation)\n");
+    printf("=> 5 : Supprimer\n");
+    printf("=> 6 : Annuler\n");
     unsigned char action;
     scanf(" %c", &action);
     clear_stdin();
@@ -1148,12 +1353,15 @@ int edit_form(void) {
             translate(current);
             break;
         case '3':
-            rotate(current);
+            mirror(current);
             break;
         case '4':
-            delete(current, prev);
+            rotate(current);
             break;
         case '5':
+            delete(current, prev);
+            break;
+        case '6':
             break;
         default:
             printf("Action invalide.\n");

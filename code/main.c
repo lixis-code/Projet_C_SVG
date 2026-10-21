@@ -14,7 +14,7 @@ int main(void){
     printf("------------Projet C SVG------------\n");
     while(1){
         printf("\nListe des option :\n");
-        printf("=> 0 - Quittez\n"); //ajouter une option "nouveau projet" qui vide la memoire et demande si l utilisateur veut sauvegarder le projet courant si il a ete modifier depuis sa derniere sauvegarde
+        printf("=> 0 - Quittez\n"); 
         printf("=> 1 - Ajouter des formes\n");
         printf("=> 2 - Editer le projet\n");
         printf("=> 3 - Sauvegarder le projet\n");
@@ -48,5 +48,8 @@ int main(void){
             break;
         }
     }
-}//ajouter des system("clear") avant chaque affichage pour un meilleur rendu + le styliser 
-//ajouter la possibiliter d inverser celui l axe x et y (miroire) par calcul de point pour un resultat plus propre
+}
+//ajouter des system("clear") avant chaque affichage pour un meilleur rendu + le styliser 
+//ajouter une option "nouveau projet" qui vide la memoire et demande si l utilisateur veut sauvegarder le projet courant si il a ete modifier depuis sa derniere sauvegarde
+//ajouter une verif de sauvegarde pour que si elle est corompu, elle le signale et retourne une forme NULL
+//faire de l optimisation (et se renseigner au prealable sur les meilleur pratique)

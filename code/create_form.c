@@ -524,8 +524,7 @@ int add_new_group(void){
  */
 int add_new_form(void){
     unsigned char choice;
-    bool boucle = true;
-    while(boucle){
+    while(1){
         printf("\nChoix des formes :\n");
         printf("=> 0 - Quittez\n");
         printf("=> 1 - Ligne\n");
@@ -541,7 +540,7 @@ int add_new_form(void){
         clear_stdin();
         switch (choice){
         case '0':
-            boucle=false;
+            return 0;
             break;
         case '1':
             add_new_line();
@@ -575,5 +574,4 @@ int add_new_form(void){
             break;
         }
     }
-    return 0;
 }
