@@ -525,6 +525,7 @@ int add_new_group(void){
 int add_new_form(void){
     unsigned char choice;
     while(1){
+        system("clear");
         printf("\nChoix des formes :\n");
         printf("=> 0 - Quittez\n");
         printf("=> 1 - Ligne\n");
@@ -543,34 +544,44 @@ int add_new_form(void){
             return 0;
             break;
         case '1':
+            system("clear");
             add_new_line();
             break;
         case '2':
+            system("clear");
             add_new_circle();
             break;
         case '3':
+            system("clear");
             add_new_ellipse();
             break;
         case '4':
+            system("clear");
             add_new_square();
             break;
         case '5':
+            system("clear");
             add_new_rectangle();
             break;
         case '6':
+            system("clear");
             add_new_multi_line();
             break;
         case '7':
+            system("clear");
             add_new_polygone();
             break;
         case '8':
+            system("clear");
             add_new_path();
             break;
         case '9':
+            system("clear");
             add_new_group();
             break;
         default:
             printf("Option invalide\n");
+            sleep(2);
             break;
         }
     }

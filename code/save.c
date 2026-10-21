@@ -309,6 +309,7 @@ void save_figure_to_file(FILE *file, node_t *current) {
  *          sérialise l'intégralité de la scène, met à jour le fichier courant et ferme le flux.
  */
 void save_project(void) {
+    system("clear");
     char filepath[256];
     
     // Si un fichier est déjà en cours (chargé ou sauvegardé précédemment)
@@ -330,6 +331,7 @@ void save_project(void) {
     FILE *file = fopen(filepath, "w");
     if (file == NULL) {
         printf("Erreur critique : Impossible de creer le fichier de sauvegarde.\n");
+        sleep(2);
         return;
     }
 
@@ -347,4 +349,5 @@ void save_project(void) {
     // Mettre à jour le fichier courant
     snprintf(current_save_filepath, sizeof(current_save_filepath), "%s", filepath);
     printf("Succes ! Projet sauvegarde dans : %s\n", filepath);
+    sleep(2);
 }

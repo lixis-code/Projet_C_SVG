@@ -1332,6 +1332,7 @@ void print_group(node_t *current, int i){
  * @return int Retourne 0 en cas de succès, -1 en cas d'erreur.
  */
 int edit_form(void) {
+    system("clear");
     if (ma_scene.count == 0 || ma_scene.head == NULL) {
         printf("\nAucune forme presente dans le projet.\n");
         return 0;
@@ -1408,24 +1409,35 @@ int edit_form(void) {
 
     switch (action) {
         case '1':
+            system("clear");
             edit(current, index);
+            sleep(2);
             break;
         case '2':
+            system("clear");
             translate(current);
+            sleep(2);
             break;
         case '3':
+            system("clear");
             mirror(current);
+            sleep(2);
             break;
         case '4':
+            system("clear");
             rotate(current);
+            sleep(2);
             break;
         case '5':
+            system("clear");
             delete(current, prev);
+            sleep(2);
             break;
         case '6':
             break;
         default:
             printf("Action invalide.\n");
+            sleep(2);
             break;
     }
 

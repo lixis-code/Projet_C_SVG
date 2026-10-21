@@ -15,6 +15,7 @@
     #include <stdbool.h>
     #include <string.h>
     #include <ctype.h>
+    #include <unistd.h>
 
     /**
      * @brief Types de figures géométriques supportés.

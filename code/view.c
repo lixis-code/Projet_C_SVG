@@ -264,6 +264,7 @@ void open_html(void){
     int ret = system(command);
     if (ret == -1) {
         printf("Impossible d'ouvrir automatiquement le navigateur.\n");
+        sleep(2);
     }
 }
 
@@ -278,6 +279,7 @@ void save_scene_to_html(void) {
     FILE *file = fopen("index/index.html", "w");
     if(file == NULL){
         printf("Une erreur est survenue lors de l'ouverture du fichier HTML.\n");
+        sleep(2);
         return;
     }
 

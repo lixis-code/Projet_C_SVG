@@ -11,8 +11,9 @@
  */
 int main(void){
     unsigned char choice;
-    printf("------------Projet C SVG------------\n");
     while(1){
+        system("clear");
+        printf("------------Projet C SVG------------\n");
         printf("\nListe des option :\n");
         printf("=> 0 - Quittez\n"); 
         printf("=> 1 - Ajouter des formes\n");
@@ -51,7 +52,7 @@ int main(void){
 }
 /*
 *   liste des modification a apporter : 
-*   1- ajouter des system("clear") avant chaque affichage pour un meilleur rendu + styliser l affichage
+*   1- styliser l affichage
 *   2- ajouter une option "nouveau projet" qui vide la memoire et demande si l utilisateur veut sauvegarder le projet courant si il a ete modifier depuis sa derniere sauvegarde
 *   3- ajouter une verif de sauvegarde pour que si elle est corompu, elle le signale et retourne une forme NULL
 *   4- ajouter la possibiliter d inverser celon l axe x et y (miroire) pour les path et les groupes

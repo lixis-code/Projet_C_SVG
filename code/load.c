@@ -438,6 +438,7 @@ node_t* load_figure_from_file(FILE *file) {
  *          puis met à jour le chemin de sauvegarde courant (`current_save_filepath`).
  */
 void load_project(void) {
+    system("clear");
     char filepath[256];
 
     if (!list_and_select_save_file(filepath, sizeof(filepath))) {
@@ -447,6 +448,7 @@ void load_project(void) {
     FILE *file = fopen(filepath, "r");
     if (file == NULL) {
         printf("Erreur : Impossible d'ouvrir le fichier de sauvegarde.\n");
+        sleep(2);
         return;
     }
 
@@ -454,6 +456,7 @@ void load_project(void) {
     if (fscanf(file, "%d %d", &version, &total_nodes) != 2) {
         printf("Erreur : Format de fichier invalide.\n");
         fclose(file);
+        sleep(2);
         return;
     }
 
@@ -468,4 +471,5 @@ void load_project(void) {
     snprintf(current_save_filepath, sizeof(current_save_filepath), "%s", filepath);
 
     printf("Succes ! Projet charge depuis : %s\n", filepath);
+    sleep(2);
 }
