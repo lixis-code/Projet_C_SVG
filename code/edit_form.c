@@ -1335,6 +1335,7 @@ int edit_form(void) {
     system("clear");
     if (ma_scene.count == 0 || ma_scene.head == NULL) {
         printf("\nAucune forme presente dans le projet.\n");
+        sleep(2);
         return 0;
     }
 
@@ -1388,7 +1389,7 @@ int edit_form(void) {
         clear_stdin();
     }while(verif !=1 || index < 0 || index >= ma_scene.count);
 
-    // Recherche du nœud précédent et du nœud cible
+    // Recherche du noeud précédent et du noeud cible
     node_t *prev = NULL;
     current = ma_scene.head;
     for (int j = 0; j < index; j++) {

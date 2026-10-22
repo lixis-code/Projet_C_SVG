@@ -33,16 +33,16 @@
     } figure_type_t;
 
     /**
-     * @brief Types de commandes possibles pour un chemin (Path SVG : M, L, C, S, Q, T, Z).
+     * @brief Types de commandes possibles pour un chemin (Path SVG : m, l, c, s, q, t, z).
      */
     typedef enum { 
-        MOVETO,        /**< M - Déplacement vers un point */
-        LINETO,        /**< L - Ligne droite vers un point */
-        CURVETO,       /**< C - Courbe de Bézier cubique classique */
-        SMOOTH_CURVE,  /**< S - Courbe de Bézier cubique lisse */
-        QUAD,          /**< Q - Courbe de Bézier quadratique */
-        SMOOTH_QUAD,   /**< T - Courbe de Bézier quadratique lisse */
-        CLOSE          /**< Z - Fermeture du chemin */
+        MOVETO,        /**< m - Déplacement vers un point */
+        LINETO,        /**< l - Ligne droite vers un point */
+        CURVETO,       /**< c - Courbe de Bézier cubique classique */
+        SMOOTH_CURVE,  /**< s - Courbe de Bézier cubique lisse */
+        QUAD,          /**< q - Courbe de Bézier quadratique */
+        SMOOTH_QUAD,   /**< t - Courbe de Bézier quadratique lisse */
+        CLOSE          /**< z - Fermeture du chemin */
     } path_cmd_type_t;
 
     // --- Structures ---

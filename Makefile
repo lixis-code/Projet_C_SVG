@@ -1,6 +1,6 @@
 CC = gcc
 
-CFLAGS = -Wall -Wextra -Werror -std=c99 -fstack-protector
+CFLAGS = -Wall -Wextra -Werror -std=c99 -fstack-protector -Iinlcude
 
 SRC =	code/main.c \
 		code/create_form.c \
@@ -10,24 +10,26 @@ SRC =	code/main.c \
 		code/save.c \
 		code/load.c \
 
-OBJS = $(SRC:.c=.o)
+OBJ_DIR = bin
+OBJS = $(addprefix $(OBJ_DIR)/, $(notdir $(SRC:.c=.o)))
 
 NAME = projet
 
-all: $(NAME)
+vpath %.c code
 
-$(NAME): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
+build: $(NAME)
 
-%.o: %.c
+$(NAME): $(OBJ_DIR) $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -o $(NAME) 
+
+$(OBJ_DIR):
+	mkdir -p $(OBJ_DIR)
+
+$(OBJ_DIR)/%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJS)
-
-fclean: clean
+	rm -rf $(OBJ_DIR)
 	rm -f $(NAME)
 
-re: fclean all
-
-.PHONY: all clean fclean re
+.PHONY: build clean
