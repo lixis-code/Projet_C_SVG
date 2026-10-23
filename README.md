@@ -8,7 +8,7 @@ Application en **C natif** permettant la création, l'édition, la visualisation
 
 - **Gestion complète des formes (CRUD)** : Lignes, Cercles, Ellipses, Carrés, Rectangles, Lignes Multiples, Polygones et Chemins (`Path`) avancés.
 - **Groupes récursifs** : Organisation des formes en groupes imbriqués avec des transformations (translation, rotation).
-- **Format de persistance personnalisé (`.svcp`)** : Format texte optimisé, séquentiel et rapide, gérant l'intégrité des listes chaînées et des commandes de chemins (M, L, C, S, Q, T, Z).
+- **Format de persistance personnalisé (`.svcp`)** : Format texte optimisé, séquentiel et rapide, gérant l'intégrité des listes chaînées et des commandes de chemins (m, l, c, s, q, t, z).
 - **Module de sauvegarde intelligent** : Gestion automatique d'un dossier `save/`, vérification de l'unicité des noms de fichiers et prise en charge de l'écrasement de la sauvegarde active.
 - **Visualisation cross-platform** : Aperçu rapide du projet depuis l'application.
 
@@ -21,7 +21,7 @@ Application en **C natif** permettant la création, l'édition, la visualisation
 ├── code/
 │   ├── main.c          # Point d'entrée et menu principal
 │   ├── create_form.c   # Logique de création des formes
-│   ├── edit_form.c     # Édition et modifications (ex: miroirs)
+│   ├── edit_form.c     # Édition et modifications
 │   ├── view.c          # Visualisation du projet
 │   ├── quit.c          # Nettoyage et gestion de la sortie
 │   ├── save.c          # Module de sérialisation et écriture .svcp
@@ -48,8 +48,14 @@ cd projet
 
 Le projet utilise uniquement la bibliothèque standard C et se compile à l'aide d'un Makefile strict (-Wall -Wextra -Werror).
 
-Pour compiler le projet, exécute la commande suivante dans ton terminal : make build
-Pour nettoyer les fichiers objets et l'exécutable : make clean
+Pour compiler le projet, exécute la commande suivante : 
+```bash
+make build
+```
+Pour nettoyer les fichiers objets et l'exécutable : 
+```bash
+make clean
+```
 
 ---
 
