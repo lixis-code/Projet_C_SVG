@@ -1,0 +1,6 @@
+# Dossier de compilation et fichiers objets
+bin/
+*.o
+
+# Exécutable final
+projet

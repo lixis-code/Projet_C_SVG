@@ -26,6 +26,7 @@ int main(void){
         switch (choice){//gestion des choix
         case '0':
             free_scene();
+            system("clear");
             return 0;
             break;
         case '1':
@@ -55,6 +56,7 @@ int main(void){
 *   1- styliser l affichage
 *   2- ajouter une option "nouveau projet" qui vide la memoire et demande si l utilisateur veut sauvegarder le projet courant si il a ete modifier depuis sa derniere sauvegarde
 *   3- ajouter une verif de sauvegarde pour que si elle est corompu, elle le signale et retourne une forme NULL
+*   ajouter un visualiseur pour la liste des forme (comme dans la partie edit)
 *   4- ajouter la possibiliter d inverser celon l axe x et y (miroire) pour les path et les groupes
 *   5- faire de l optimisation (et se renseigner au prealable sur les meilleur pratique) et se renseigner sur les pratique d organisation des fichier d un projet
 */
